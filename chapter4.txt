@@ -355,7 +355,7 @@ The final result is a dataset that contains all the info we need, so we can star
 
 ``` python
 # Top rated movies
-print("Top rated movies (overall):") , movie_data.groupby('title').size().order(ascending=False)[:20]
+print("Top rated movies (overall):", movie_data.groupby('title').size().sort_values(ascending=False)[:20]
 ```
 
 The first thing we are going to do is find movies which have the most ratings. The code above may look big and confusing, but this is actually a feature of Python: You can chain multiple commands. Let's break it down.
@@ -373,10 +373,10 @@ movie_data.groupby('title').size()
 After we have the movies by title, we call the *size()* function to arrange them by size. Normall, this is in ascending order, so:
 
 ``` python
-movie_data.groupby('title').size().order(ascending=False)[:20]
+movie_data.groupby('title').size().sort_values(ascending=False)[:20]
 ```
 
-we call the *order(ascending=False)* function, which arranged the data in descending order (so movies with more ratings appear at top). Finally, we use *[:20]* to only show the top 20 movies.
+we call the *sort_values(ascending=False)* function, which arranged the data in descending order (so movies with more ratings appear at top). Finally, we use *[:20]* to only show the top 20 movies.
 
 ```
 Top rated movies (overall):
@@ -426,7 +426,7 @@ This will return the movies sorted by index. We want the movies sorted by number
 
 ``` python
 # Get the top rated ones
-oldies = oldies.groupby('title').size().order(ascending=False)
+oldies = oldies.groupby('title').size().sort_values(ascending=False)
 
 ```
 
@@ -438,7 +438,7 @@ Let's do the same for teenagers.
 # Extract movies for teens
 teens = movie_data[(movie_data.age > 12) & (movie_data.age < 20)]
 # Get the top rated ones
-teens = teens.groupby('title').size().order(ascending=False)
+teens = teens.groupby('title').size().sort_values(ascending=False)
 ```
 
 I'm doing the same as above, except this time I have two checks : *(movie_data.age > 12) & (movie_data.age < 20)*. We can have as many checks as we want. We could have added a *movie_data.gender == 'F'* if we wanted teenage girls.
@@ -543,7 +543,7 @@ That's better. We are getting movies we've heard of.
 Let's see which movies were top rated by women:
 
 ``` python
-top_movies_women = ratings_by_gender.sort_index(by='F', ascending=False)
+top_movies_women = ratings_by_gender.sort_values(by='F', ascending=False)
 ```
 
 You should understand what's going on by now. We are sorting *ratings_by_gender* by the 'F' column, which remember, stands for female. Let's print that:
@@ -607,7 +607,7 @@ And get the absolute values, to remove the negative sign.
 
 ``` python
 #Sort by size
-gender_diff.sort(ascending = False)
+gender_diff.sort_values(inplace=True, ascending = False)
 ```
 Sort it by descending size, so the biggest differences will show up on top. And finally, we graph it:
 
