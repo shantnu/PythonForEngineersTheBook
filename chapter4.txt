@@ -355,7 +355,7 @@ The final result is a dataset that contains all the info we need, so we can star
 
 ``` python
 # Top rated movies
-print("Top rated movies (overall):", movie_data.groupby('title').size().sort_values(ascending=False)[:20]
+print("Top rated movies (overall):\n", movie_data.groupby('title').size().sort_values(ascending=False)[:20]
 ```
 
 The first thing we are going to do is find movies which have the most ratings. The code above may look big and confusing, but this is actually a feature of Python: You can chain multiple commands. Let's break it down.
