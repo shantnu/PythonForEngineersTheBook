@@ -31,11 +31,6 @@ So we are going to start really simple. How to display an image on the screen.
 
 You might be surprised at how hard even this simple thing is. Try to search for how to display an image with Python, and you won't find many results. I had to find a complicated example and extract the code from that.
 
-To get started, you will need to install OpenCv. We are using OpenCV2 for this book.  
-
-<http://docs.opencv.org/trunk/doc/py_tutorials/py_setup/py_setup_in_windows/py_setup_in_windows.html>
-
-<http://docs.opencv.org/doc/tutorials/introduction/linux_install/linux_install.html>
 
 Fire up a Python prompt and type:
 
@@ -222,12 +217,12 @@ This code is the same as before. We have detected the edges in the image and the
 Now, we are going to find the contours (which is just a fancy word for edges) in the image. If you are wondering why we ned to do that, since we can clearly see the edges in the image above, it's because the code isn't aware of it. The code below finds the edges programatically:
 
 ```
-contours, hierarchy = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+im, contours, hierarchy= cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 ```
 
 The *findContours()* finds the contours in the given image. The first option is the output of the canny edge detector. *RETR_EXTERNAL* tells OpenCv to only find the outermost edges (as you can find countours within countours). The second arguments tells OpenCv to use the simple approximation.
 
-The function returns two values: A list of contours found, and the hierarchy (which we'll ignore. It is used if you have many countours embedded within others).
+The function returns three values: The image, a list of contours found, and the hierarchy (which we'll ignore. It is used if you have many countours embedded within others).
 
 The *contours* return value is a simple list that contains the number of countours found. Taking the length of it will give us number of objects found.
 
@@ -287,7 +282,7 @@ Let’s break down the actual code, face_detect.py.
 ```
 # Get user supplied values
 imagePath = sys.argv[1]
-cascPath = sys.argv[2]
+cascPath = "haarcascade_frontalface_default.xml"
 ```
 
 You first pass in the image and cascade names as command-line arguments. We’ll use the Abba image as well as the default cascade for detecting faces provided by OpenCV.
@@ -353,7 +348,7 @@ Checking the results
 Let’s test against the Abba photo:
 
 ```
-$ python face_detect.py abba.png haarcascade_frontalface_default.xml
+$ python face_detect.py abba.png
 ```
 
 ![](images/abba.jpg)
@@ -383,7 +378,7 @@ So what if you want to use a webcam? OpenCV grabs each frame from the webcam and
 import cv2
 import sys
 
-cascPath = sys.argv[1]
+cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 ```
 
@@ -454,18 +449,17 @@ Here, we are just cleaning up.
 If you want to use the webcam:
 
 ```
-python webcam_face_detect.py haarcascade_frontalface_default.xml
-
+python webcam_face_detect.py
 ```
 
 If you are using the VM:
 
 ```
-python webcam_face_detect.py haarcascade_frontalface_default.xml webcam.mp4 
+python webcam_face_detect.py webcam.mp4 
 
 ```
 
-This will play the file I provided. It may not work on Windows unless you have a video decoder like Ffmpeg installed. I couldn't get Ffmpeg working on Windows with OpenCv, but it works out of the box on Linux. If you are on Windows, I recommend a webcam. The webcam won't work if you are using my VM, so you have to use the video file.
+This will play the file I provided. It may not work on Windows unless you have a video decoder like Ffmpeg installed. 
 
 ![](images/image11.jpg)
 
@@ -484,9 +478,7 @@ How do you detect motion? You take two consecutive frames, and find the differen
 
 ```
 #!/usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+
 import cv2
 import sys
 import numpy as np
@@ -673,9 +665,7 @@ I'm going to use a method borrowed from machine learning. I'll have two shirts t
 ```
 
 #!/usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+
 from SimpleCV import *
 ```
 
@@ -896,9 +886,7 @@ Open the file *color_test.py* and have a look at it. The first part is the same 
 
 ```
 #!/usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+
 from SimpleCV import *
 import sys
 # The location in the picture which only has the shirt.
