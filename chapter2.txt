@@ -8,10 +8,6 @@ Move to the *Plotting* folder and open up *list_comp.py*.
 
 ```
 #! /usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-
 import numpy as np
 ```
 
@@ -127,10 +123,6 @@ In this example, we are going to plot a few simple sin  and cos graphs, getting 
 
 ```
 #! /usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-
 import numpy as np
 import matplotlib.pyplot as plt
 ```
@@ -217,10 +209,6 @@ I’m using two different files to show different ways of reading data.
 
 ```
 #! /usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-
 import numpy as np
 import matplotlib.pyplot as plt
 ```
