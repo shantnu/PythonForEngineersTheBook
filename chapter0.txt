@@ -1,0 +1,104 @@
+# Introduction
+
+Hello, and thanks for reading my book. I hate books with long intros written just to pad the word count, so I will dive right in. We'll start with something that should be simple, but still stumps a lot of people.
+
+**Installing Python**
+
+You might think installing Python is easy, but you'd be wrong. The problem is, for scientific computing, many libraries like Numpy/Scipy (which I'll discuss below) are written in Fortran or C. That's because they were ported from old libraries written way back.
+
+Most people you will find online, on places like Stack overflow, Reddit etc are web developers. They live in a highly sterilised environment, where every library they use is written in pure Python, and so easy to install. So if you get stuck installing Python and ask them questions, you will not get very helpful answers, and may even get insults.
+
+When writing this book, I looked for many solutions to this problem. The best one I found is the [Anaconda Python distribution](http://continuum.io/downloads). Especially if you are on Windows, I recommend using this distribution. It comes with most engineering libraries pre-installed (the notable exception is OpenCv). 
+
+The other option is to use Linux. You don't need to install Linux, a virtual machine is fine. The best one I've used is [Virtual box](https://www.virtualbox.org/). It is free and open source. I recommend installing [Linux Mint](http://www.linuxmint.com/). It is the easiest to use and most user friendly Linux. That's what I'm using for the virtual machine I built. Those of you who chose the VM option of the book will get this.
+
+The great thing about Linux Mint is that most libraries you need will come preinstalled. The only thing I had to install was, surprisingly, Pandas.
+
+If you get stuck with libraries, do ask for help.
+
+**Important Python libraries**
+
+**1. Scipy / Numpy** - Scipy stands for Scientific Python. This is a mega project that contains everything under the sun for scientific computing. Scipy added a few things to Python. For example, normal Python only has a integer datatype. However, those of you from a low level or engineering backgrounds may know integers can be 8, 16, 32  or 64 bit. And then you have floating point numbers, usually stored as 64 bit. These additions were very useful in Python, but Scipy was a huge project, so a decision was made to extract some parts of it into a library called Numpy.
+
+Numpy is what we'll mostly use. 90% of the time, Numpy has the functions we need. Now and then, Numpy will not have the functionality required and then we look into Scipy (which has everything you could possibly think of, but may require some Googling).
+
+Keep this in mind. Many people get confused between Scipy and Numpy, not realising they are the same thing.
+
+An important library in Scipy we will use often is Matplotlib (or Pylab). This is a graphing library that was originally based on Matlab (as indeed, most of Scipy). For those who haven't heard of it, Matlab is one the most used packages for scientific computing. It is also super expensive with a complicated licensing scheme which means most companies buy limited copies. The only place you will find Matlab installed commonly is Universities. But many scientists / teachers are moving to Python (or other open source tools like R), as they want the freedom to play with code in their own time, for their own hobby projects, without having to pay thousands in licensing.  The advantage of open source tools is that students can install them on their own laptops.
+
+**2 Pandas**
+
+Pandas is a fairly recent addition to the Python world. It was originally written to replace the functionality of R, and is used mainly in the financial world for statistical computing. 
+
+For a long time, I avoided using Pandas, as I figured (wrongly) that everything I could do in Pandas, I could do with Numpy. Which is technically correct, as Pandas is built on top of Scipy/Numpy.
+
+But once I actually tried it, I loved it. Numpy is okay if you are working with simple text or csv files. But as soon as you start working with Microsoft Excel or other large complicated files, there is too much low level work in Numpy. Pandas takes care of that for you. Nowadays, I prefer to use Pandas, even for reading simple csv, just for all the power it offers us.
+
+
+If you used the Anaconda distribution I recommend, Scipy and Pandas will be preinstalled. On Liunx Mint, Scipy was installed, but I had to install Pandas myself.
+
+
+**3 OpenCv and SimpleCv**
+
+These are both libraries for image and video processing. OpenCv is the older one, and has been around forever, though the Python version is comparatively recent (you will find most examples for OpenCv in C/C++, though Python usage is increasing).
+
+The problem with OpenCv is that it is monstrous and hard to use. To get around this, SimpleCv was created. It is based on top of openCv, but aims to make its usage easier. I will talk about this later, but I found that while SimpleCv is easier to use, it's not very easy to install, and very flaky. 
+
+**4 Other libraries**
+
+These are some other libraries you should know about.
+
+**Virtualenv** (Virtual environment) is a great library for installing different versions of libraries on the same machine. If you ever had code that only worked with v0.2 of some library, Virtualenv will create a special Python install that comes with that version only. You can have dozens of versions of the same library, with none of them clashing with each other.
+
+The only problem is Virtualenv only works with pure Python code, so it won't work with Scipy, OpenCv etc. Anaconda created a version of this, but it doesn't work so well on Windows (which is the one place it needs to work).
+
+**pip** is how you install Python libraries. Always. Never use *easy_install*, an old relic. So if you want to install something like flask, the correct way is:
+
+```
+pip install flask
+```
+
+*pip* is often combined with *virtualenv*, so that each environment has its own pip.
+
+Again, pip works great only for pure Python libraries.
+
+## iPython
+
+For a long time, I used IDLE, which is the default GUI Python client. Many people prefer GUIs, and IDLE sort of works.
+
+Sort of. It's very clunky and ugly. If you press the up key, it doesn't take you to the last command. Instead, it just moves the cursor up. If you want to run the last command, you have to press up multiple times till the cursor touches the command you want and press enter. And lord help you if you want to change the directory or list the files in the current directory. You have to go trawling through the *os* library commands, and even then you may not get what you want.
+
+Which is why when I first used iPython, I was blown away. It is a lot easier and intuitive to use than IDLE, you can use standard Linux commands to move around (ls, pwd, cd), you can run python scripts online, just to mention a few features. I normally use IPython Qt Console version:
+
+![](images/ipython1.png)
+
+There is another cool thing  called IPython notebook, that allows you to put text, graphics and Python code in a web based file that you can share with others. This is great for writing tutorials, as the user doesn't have to copy paste code. They can run the notebook directly, and see the explanation and code running at same time.
+
+![](images/ipython2.png)
+
+I won't use the notebook much, but I will use the qt console version. This is what iPython output will look like:
+
+```
+In [1]: print "I am in iPython console"
+I am in iPython console
+
+In [2]:  a = range(5)
+
+In [3]: a
+Out[3]: [0, 1, 2, 3, 4]
+
+
+In [6]: 2**8
+Out[6]: 256
+
+```
+
+*In* is what I have entered, *Out* is the output.
+
+Seriously, give IPython a try. It's so great I could have written the whole book in iPython. I will save the notebook in the figure above in the source code as first_try.ipynb (under plotting), in case you want to play around.
+
+## Source Code
+
+You should get all the source code for the book. That's because I don't want you to waste time typing code. 
+
+I recommend you open the code with your favourite code editor along with the book, and run the code as you are reading it. If you really want to understand the code, play with it. Try changing it, try to break it, add more prints to see how each line works. Don't worry about corrupting the code, as you can download the latest version anytime. It's available on my [Github account](https://github.com/shantnu/PyEng). You don't even need to install Git- if you look at the right side, there is a *Download zip* option-- just download the latest code that way.

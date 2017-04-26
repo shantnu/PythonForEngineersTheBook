@@ -1,0 +1,443 @@
+# Create a Word Counter in Python
+
+This chapter is for those new to Python, but I recommend everyone go through it, just so that we are all on equal footing.
+
+##Baby steps: Read and print a file
+
+Okay folks, we are going to start gentle. We will build a simple utility called word counter. Those of you who have used Linux will know this as the wc utility. On Linux, you can type:
+
+```
+wc <filename>
+```
+
+to get the number of words, lines and characters in a file. The wc utility is quite advanced, of course, since it has been around for a long time. We are going to build a baby version of that. This is more interesting than just printing *Hello World* to the screen.
+
+With that in mind, let’s start. The file we are working with is read_file.py, which is in the folder Wordcount.
+
+```
+#!/usr/bin/python
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+```
+
+The first line that starts with a *#!* is used mainly on Linux systems. It tells the shell that this is a Python file, and should be run as such. It also tells Linux which interpreter to use (Python in our case). It doesn’t do any harm on Windows (as anything that starts with a *#* is a comment in Python), so we keep it in.
+
+The next three lines require a bit of an explanation. I am building the course with Python 2.7, which is currently(2014) the most popular version, even though the 2.x line has been officially discontinued. But the fact is, most people are still using 2.x. How many? Something like 90%. Which means if you go for a job, chances are you will use Python 2.x.
+
+However, 3.x is the officially supported version. I will get around this feature by writing my code in a way that makes it future proof.
+
+The difference between 2 and 3 is beyond the scope of this book, however, let’s have a quick look:
+
+```
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+```
+
+One of the things Python 3 introduced was that *print* was turned into a function, while earlier it was a keyword. We will be using the newer print function, so that’s what I import  first.
+
+The second thing I import is division. Python 2's division was broken. For example,
+
+```
+3/2
+Out[1]: 1
+
+3.0/2.0
+Out[2]: 1.5
+
+```
+
+Dividing 3 by 2 gives 1, not 1.5. If I want the correct answer, I need to convert the numbers to floating point. Now, here is the same example in Python 3 (or future proof Python 2):
+
+```
+from __future__ import division
+
+3/2
+Out[4]: 1.5
+
+```
+
+Now I get the correct answer.
+
+The third thing I import is *absolute_import*. Explaining that is a bit complicated, so I won't go into that for just the moment. Let's start looking at the code.
+
+```
+f = open("birds.txt", "r")
+```
+
+We simply open a file called “birds.txt”. It must exist in the current directory (ie, the directory you are running the code from). Later on, we will cover reading from the command line, but for now, the path is hard coded. The *r* means the file will be opened in a read only mode. Other common modes are *w* for write, *a* for append. You can also read/write binary files, however we won’t go into that for the moment. Our files are plain text.
+
+```
+data = f.read()
+f.close()
+```
+
+After opening the file, we read its contents into a variable called data, and close the file.
+
+```
+print(data)
+```
+
+And we print the file. And now, to test our code.
+If you are on Linux, you can just type:
+
+```
+./read_file.py
+```
+
+to run it. You might have to make the file executable. On Windows, you’ll need to do:
+
+```
+python read_file.py
+```
+
+Go to the folder called WordCount, and run the file there:
+
+```
+WordCount$ ./read_file.py 
+STRAY BIRDS 
+BY 
+RABINDRANATH TAGORE 
+
+STRAY birds of summer come to my 
+window to sing and fly away. 
+
+And yellow leaves of autumn, which 
+have no songs, flutter and fall there 
+with a sigh.
+WordCount$
+```
+
+And there you go. Your First Python program.
+
+## Count words and lines
+
+Okay, so we can read a file and print it on the screen. Now, to count the number of words. We’ll be using the file count_words.py in the WordCount folder.
+
+```
+#! /usr/bin/python
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+
+f = open("birds.txt", "r")
+data = f.read()
+f.close()
+```
+
+These lines should be familiar by now. We open the file and read it.
+
+```
+words = data.split(" ")
+```
+
+Python has several in built functions for strings. One is the *split()* function which splits the string on the given parameter. In the example above, we are splitting on a space. The function returns a list (which is what Python calls arrays) of the string split on space.
+
+To see how this works, I’ll fire up an IPython console.
+
+```
+In [1]: "I am a boy".split(" ")
+
+Out[1]: ['I', 'am', 'a', 'boy']
+```
+
+I took a sentence “I am a boy” and split it on a space. Python returned a list with four elements: *['I', 'am', 'a', 'boy']*.
+We can split on anything. Here, I split on a comma:
+
+```
+In [2]: "The birds, they are flying away, he said.".split(",")
+
+Out[2]: ['The birds', ' they are flying away', ' he said.']
+```
+
+Coming back to our example:
+
+```
+words = data.split(" ")
+```
+
+You should know what we are doing now. We are splitting the file we read on spaces. This should give us the number of words, as in English, words are separated by space (as if you didn't know already).
+
+```
+print("The words in the text are:")
+print(words)
+num_words = len(words)
+print("The number of words is ", num_words)
+```
+
+So we print the words that we found. Next, we call the *len()* function, which returns the length of a list. Remember I said the *split()* function breaks the string into a list? Well, by using the *len()* function, we can find out how many elements the list has, and hence the number of words.
+
+Next, we find the number of lines by using the same method.
+
+```
+lines = data.split("\n")
+print("The lines in the text are:")
+print(lines)
+print("The number of lines is", len(lines))
+```
+
+We do the same thing, except this we split on the newline character ("\n"). For those who don’t know, the newline character is the code that tells the editor to insert a new line, a return. By counting the number of newline characters, we can get the number of lines in the program.
+
+Run the file *count_words.py*, and see the results. 
+
+```
+$WordCount [master]> python .\count_words.py
+
+The words in the text are:
+['STRAY', 'BIRDS', '\nBY', '\nRABINDRANATH', 'TAGORE', '\n\nSTRAY', 'birds', 'of', 'summer', 'come', 'to', 'my', '\nwindow', 'to', 'sing', 'and', 'fly', 'away.', '\n\nAnd', 'yellow', 'leaves', 'of', '
+autumn,', 'which', '\nhave', 'no', 'songs,', 'flutter', 'and', 'fall', 'there', '\nwith', 'a', 'sigh.']
+
+The number of words is  34
+
+The lines in the text are:
+['STRAY BIRDS ', 'BY ', 'RABINDRANATH TAGORE ', '', 'STRAY birds of summer come to my ', 'window to sing and fly away. ', '', 'And yellow leaves of autumn, which ', 'have no songs, flutter and fall th
+ere ', 'with a sigh.']
+
+The number of lines is 10
+
+```
+
+
+Now open the file *birds.txt* and count the number of lines by hand. You’ll find the answers are different. That’s because there is a bug in our code. It is counting empty lines as well. We need to fix that now.
+
+## Count lines fixed
+
+```
+#! /usr/bin/python
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+
+f = open("birds.txt", "r")
+data = f.read()
+f.close()
+
+lines = data.split("\n")
+print("Wrong: The number of lines is", len(lines))
+
+```
+
+This is the old code, the one we need to correct.
+
+**For loop in Python**
+
+The syntax of the for loop is:
+
+```
+for <counter> in <list / array>:
+    <do something>
+```
+
+A few key things. There is a colon (:) after the for instruction. And in Python, there are no brackets *{}* or start-end keywords. For example, if you come from a C/C++/Java/C# type world, this is how you would write your for loop:
+
+```
+for(i=0; i <10; i++)
+{
+<do something here>
+}
+```
+
+The curly braces *{}* tell the compiler that this code is under the for loop. Python doesn’t have these braces. Instead, it uses white space/indentation. If you don’t use indentation, Python will complain. Example:
+
+```
+for i in range(5):
+print(i)
+  File "<ipython-input-16-c04bfe0468c5>", line 2
+    print(i)
+        ^
+IndentationError: expected an indented block
+```
+
+The correct way to do it is:
+
+```
+for i in range(5):
+    print(i)
+    
+0
+1
+2
+3
+4
+```
+
+How much indentation to use? Four spaces is  recommended. If you are using a good text editor like Sublime Text, it will do that automatically.
+Coming back to our code,
+
+```
+for l in lines:
+    if not l:
+        lines.remove(l)
+```
+
+Let’s go over this line by line.
+
+```
+for l in lines:
+```
+
+We are looping over our list *lines*. *l* will contain each line as Python is looping over them.
+
+As a side note, those of you who come from a C/C++ background, you will be surprised by us not using arrays. We don’t need to— Python will do that for us automatically. Python will take the list *lines* and automatically loop over it. We don’t need to do *lines[0]*, *lines[1]*, *lines[2]* etc like you would do in C/C++. In fact, doing so is an anti-pattern.
+
+So now we have each line. We need to now check if it is empty. There are many ways to do it. One is:
+
+```
+if len(l) == 0:
+```
+
+This checks if the current line has a length of 0, which is fine, but there is a more elegant way of doing it.
+
+```
+if not l:
+    lines.remove(l)
+```
+
+The *not* keyword in Python will automatically check for emptiness for us. If the line is empty, we remove it from the list using the *remove()* command.
+
+Again, like the for loop, we need to give four spaces to let Python know that this instruction is under the if condition.
+
+We should now have the correct number of lines. Run *count_lines_fixed.py* to see the results.
+
+```
+$WordCount [master]> python .\count_lines_fixed.py
+
+Wrong: The number of lines is 10
+Right: The number of lines is 8
+```
+
+## Bringing it all together
+
+Now we need to tie it all together. *word_count.py* is our final file.
+
+```
+#! /usr/bin/python
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+import sys
+```
+
+The only new thing here is the *import sys* command. This is needed to read from the command line.
+
+We will beak our code into functions now. The way to write a function in Python is:
+
+```
+def foo(<input>):
+    <do something>
+    return <value>
+```
+
+*def* defines a function. Notice the colon (:) and the white space: Like loops and *if* conditions, you need to use indentation for code under the for loop.
+
+Our first function counts the number of words:
+
+```
+def count_words(data):
+    words = data.split(" ")
+    num_words = len(words)
+    return num_words
+```
+
+It takes in the list data, and returns the number of words. Keep in mind this is the exact same code as before, the only difference is now it is in a function.
+
+ The function to count lines is similar:
+
+```
+def count_lines(data):
+    lines = data.split("\n")
+    for l in lines:
+        if not l:
+            lines.remove(l)
+
+    return len(lines)
+```
+
+The next part is one of the most Googled lines:
+
+```
+if __name__ == "__main__":
+```
+
+There are two ways to call Python files:
+
+1. You can call the file directly, *python filename*, which is what we’ve been doing.
+
+2. You can call the file as an external library.
+
+We haven’t covered calling the file as a library yet. If you wanted to use the function *count_words* in another file, you would do this:
+
+```
+from word_count import count_words
+```
+
+This will take the function count_words and make it available in the new file.
+You can also do:
+
+```
+from word_count import *
+```
+
+This will import all functions and variables, but generally, this approach isn't recommended. You should only import what you need.
+
+Now, sometimes you’ll have code you only want to run if the file is being called directly, ie, without an import. If so, you can put it under this line:
+
+```
+if __name__ == "__main__":
+```
+
+This means (in simple English): Only run this code if I am running this file from the command line (or something similar). If we import this file in another, all of this code will be ignored.
+
+By using this syntax, you can ensure your function only runs when someone calls your program directly, and not imports is as a module.
+
+*\__name\__* is an an internal variable set to *\__main\__* by the Python interpreter when we are running the program standalone.
+
+Now in our examples, we have been calling the files directly, but I thought I’d show you this syntax in case you ever saw it on the web. It is optional in our case, but good practice in case you want to turn your code into a library. Even if you don’t want to at the moment, it’s a good idea to use the command as it’s only one line.
+
+```
+    if len(sys.argv) < 2:
+        print("Usage: python word_count.py <file>")
+        exit(1)
+```
+
+Remember we imported the sys library? It contains several system calls, one of which is the sys.argv command, which returns the command line arguments. You already know our old friend *len()*. We check if the number of command line arguments is less than two (the first is always the name of the file), and if so, print a message and exit. This is what happens:
+
+```
+WordCount> python .\word_count.py
+Usage: python word_count.py <file>
+```
+
+The next line:
+
+```
+    filename = sys.argv[1]
+```
+
+As I said, the first element of sys.argv (or argv[0]) will be the name of the file itself (word_count.py in our case). The second will be the file the user entered. We read that.
+
+```
+    f = open(filename, "r")
+    data = f.read()
+    f.close()
+```
+
+We read the data from the file.
+
+```
+    num_words = count_words(data)
+    num_lines = count_lines(data)
+
+    print("The number of words: ", num_words)
+    print("The number of lines: ", num_lines)
+```
+
+And now we call our functions to count the number of words and lines, and print the results. Voila! A simple word counter.
+
+```
+WordCount> python .\word_count.py .\birds.txt
+The number of words:  34
+The number of lines:  8
+```
+
+The word counter isn’t perfect, and if you try it with different files, you will find many bugs. But it’s good enough for us to move on to the next chapter.

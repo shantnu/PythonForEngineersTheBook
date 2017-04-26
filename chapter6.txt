@@ -1,0 +1,168 @@
+# MultiThreading vs Multiprocessing in Python
+
+## Threads vs Processes on Linux
+
+I will stick to Linux for this chapter, as Python is closely tied with Linux development. The theory is the same for Windows as well, although the underlying implementation differs. 
+
+### Processes
+
+Any program is run in Linux as a process. Each process has it's own memory, stack and access to shared peripherals. As far as each process is concerned, it has the whole computer to itself (a feeling many Windows programs take to an extreme). Additionally, if you have done any Windows programming (not programming *on* Windows, but programming the Microsoft Windows API), you will find that there is some difference in terminology. Microsoft has a few special terms it uses for its processes. I won't go into the differences here.
+
+So how do multiple processes run at the same time? That's the job of the operating system. It ensures that each process can only access its own memory, gets a chance to run on the CPU, can access external peripherals like network and so on.
+
+Processes are considered heavy duty as each starts with a complete execution environment. To get around this, sometimes programmers uses threads.
+
+### Threads
+
+A thread is a lightweight process. Basically, they are smaller units of a running process. Which means they share the memory and other resources of the process that started them.
+
+You can immediately see the benefit of this. If you have a complicated algorithm, break it into threads and run it in parallel. Since all the threads can see the common memory, they can all work together without a complicated messaging mechanism. Everyone's happy!
+
+Not. Threads are messy and dangerous, and can lead to horrible bugs than occur once in six months. This is due to things like timing issues (does Thread A run before Thread B?). It can also lead to a very dangerous thing called race conditions, where two threads "race" to update the same code/memory. This leads to unpredictable behaviour.
+
+Obviously, there are ways around this. Locks, semaphores etc were invented to get around these issues. I won't go into that since it's beyond the scope of this chapter.
+
+Python doesn't have thread support builtin. Instead, it uses the thread of the operating system (Pthreads on Linux, Windows threads on Windows).
+
+But let's say you find a dream problem which is truly independent. There is no data sharing, so no risk of race conditions or timing problems. Such a thing is possible in heavily mathematical based problems. What then? In that cases, threads should always be used, right?
+
+### Thread vs single execution
+
+Let's check our theory.
+
+Our first file is single.py.
+
+```
+import random
+
+def gen_random_data():
+    arr = []
+    for i in range(100000):
+        arr.append(random.random())
+    print "job done"
+```
+
+We have a simple function that generates random data. This is to simulate a purely  mathematical problem. We run this code 4 times:
+
+```
+if __name__ == '__main__':
+    gen_random_data()
+    gen_random_data()
+    gen_random_data()
+    gen_random_data()
+```
+
+I am running the code four times, to see what effect using threads has (as each call above will have its own thread).
+
+Now, let's open our next file, thread.py.
+
+```
+import threading
+import random
+```
+
+We are importing the threading module this time. 
+
+```
+def gen_random_data():
+    arr = []
+    for i in range(100000):
+        arr.append(random.random())
+    print "job done"
+```
+
+We have the same function as before.
+
+```
+if __name__ == '__main__':
+
+    for x in range(4):
+        process = threading.Thread(target=gen_random_data)
+        process.start()
+```
+
+*threading.Thread* creates a Thread. *target* is the name of the function we want to call. In our case, it's *gen_random_data*. We create a thread and start it off with *process.start()*.
+
+All fairly simple. Since the thread function is running the four threads in parallel, it should be faster, right?
+
+I have a machine with 4 cores. Let's try it out.
+
+I'm going to use the Linux *time* utility to time the code. Your results may vary based on your operating system, your processor, but the pattern should be the same.
+
+I ran the code three times, and took the most common value. First, the single execution code:
+
+```
+time ./single.py
+job done
+job done
+job done
+job done
+
+real    0m0.601s
+user    0m0.564s
+sys     0m0.016s
+
+```
+
+*real* is the value we care about, and we see it took 0.6 seconds. Now, the multithreaded code:
+
+```
+time ./thread.py
+job done
+job done
+job done
+job done
+
+real    0m1.033s
+user    0m1.012s
+sys     0m0.304s
+
+```
+
+Wait, that took more than a minute. How's that possible? Why did threading actually slow our code? The threaded code is almost twice as slow!
+
+Welcome to the Global Interpreter Lock (GIL). GIL is a "feature" of Python that prevents threads from running in parallel. The GIL forces each thread to wait for access to the CPU, which means in practice it is the same as running a single threaded code, except you have all the overhead of creating and managing threads. Read more about it [here](http://www.dabeaz.com/GIL/).
+
+To get around this problem, the Multiprocessing module was created. It's function calls are similar to the Threading module, so that's it's easier to migrate between the two.
+
+Let's see the same code with multiprocessing.
+
+```
+
+#!/usr/bin/python
+import multiprocessing
+import random
+from gen_rand import gen_random_data
+
+if __name__ == '__main__':
+    for x in range(4):
+        process = multiprocessing.Process(target=gen_random_data)
+        process.start()
+```
+
+You can see the code is similar to threading, except we call the multiprocessing module. Let's give this a spin:
+
+
+```
+
+ time ./process.py
+job done
+job done
+job done
+job done
+
+real    0m0.233s
+user    0m0.644s
+sys     0m0.064s
+
+```
+
+This time, we can see its taking a third of the time of the single execution run. Why a third, when I have four cores? The main reason is that there is an overhead in creating processes. There are also other factors, like what other processes are running in the background, how much disk/network access is required.
+
+**But multiprocessing isn't always the answer**
+
+The problem with multiprocessing is that there is no shared state. So if you want to pass data between processes, you have to roll your own solution (or use something the operating system provides, like sockets in Linux).
+
+If you have ever written multi-threaded (or multiprocess) code, you will know it can get messy very soon. It's okay for tiny problems, but not for production code, especially if it has been bolted on in a very ugly fashion, like it has for Python.
+
+So I hate to say this in a Python book, but if you must have multithreaded code, I'd recommend using a language with it built in, like Erlang or Go.

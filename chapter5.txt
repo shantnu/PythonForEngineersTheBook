@@ -1,0 +1,1001 @@
+# Image and Video Processing
+
+**A bit about the RGB model**
+
+Computer graphics often use the *RBG* model, which stands for Red, Green and Blue. These are the three primary colors that can be used to create other colors. If you want an overview, [Wikipedia](http://en.wikipedia.org/wiki/RGB_color_model) has a good one.
+
+The main thing you need to know is that you can create different colors by combining these primary colors. RGB colors usually have values of 0-255, where 0 means the color isn't present at all, and 255 means it's present with full strength. So the Rgb values for the color red are:
+
+```
+255, 0 , 0
+```
+
+So the first part is 255, which is Red. The other two are zero. This will create pure red.
+
+You can create other colors by mixing these three. For example, pink is:
+
+```
+255, 51, 255
+```
+
+Red part is 255, green  is 51 and blue is 255 again.
+
+I found these values by Googling *rgb codes*, and opening one the dozens of results that come up.
+
+The only other thing you need to know is OpenCv inverts this. So instead of RGB, you have BGR, or Blue, green, red.
+
+
+## Display an image
+
+So we are going to start really simple. How to display an image on the screen.
+
+You might be surprised at how hard even this simple thing is. Try to search for how to display an image with Python, and you won't find many results. I had to find a complicated example and extract the code from that.
+
+To get started, you will need to install OpenCv. We are using OpenCV2 for this book.  
+
+<http://docs.opencv.org/trunk/doc/py_tutorials/py_setup/py_setup_in_windows/py_setup_in_windows.html>
+
+<http://docs.opencv.org/doc/tutorials/introduction/linux_install/linux_install.html>
+
+Fire up a Python prompt and type:
+
+```
+import cv2
+```
+
+If you see no problems, you're good. Open the file *display.py*
+
+To our code:
+
+```
+import cv2
+import sys
+```
+
+We import OpenCv and sys. sys will be used for reading from the command line.
+
+```
+# Read the image. The first command line argument is the image
+image = cv2.imread(sys.argv[1])
+```
+
+The function to read from an image into OpenCv is *imread()*. We give it the arugment of *sys.argv[1]*, which is just the first commandline argument. The image is read in a variable called *image*.
+
+```
+cv2.imshow("Image", image)
+cv2.waitKey(0)
+```
+
+*imshow()* is the function that displays the image on the screen. The first value is the title of the window, the second is the image file we have previously read. *cv2.waitKey(0)* is required so that the image doesn't close immediately. It will wait for a key press before closing the image.
+
+```
+python display.py ship.jpg
+```
+
+![](images/image1.png)
+
+
+
+And you should see the image.
+
+## Blur and grayscale
+
+Two important functions in image processing are blurring and grayscale. Many image processing operations take place on grayscale (or black and white) images, as they are simpler to process (having just two colors).
+
+Similarly, blurring is also useful in edge detection, as we will see in later examples. Open the file *blur.py*.
+
+```
+
+import cv2
+import sys
+
+# The first argument is the image
+image = cv2.imread(sys.argv[1])
+
+```
+
+This is the same as before.
+
+```
+#conver to grayscale
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+```
+
+First, we convert the image to gray. The function that does that is *cvtColor()*. The first argument is the image to be converted, the second is the color mode. *COLOR_BGR2GRAY* stands  for *Blue Green Red to Gray*.
+
+You must have heard of the RGB color scheme. OpenCv does it the other way round- so blue is first, then green, then red.
+
+```
+#blur it
+blurred_image = cv2.GaussianBlur(image, (7,7), 0)
+```
+
+If you have ever used Photoshop (or its ugly cousin Gimp), you may have heard of the Gaussian blur. It is the most popular function to blur images, as it offers good blurring at fairly fast speed. That's what we'll use.
+
+The first argument is the image itself.
+
+The second argument is the window size. Gaussian Blur works over a small window, and blurs all the pixels in that window (by averaging their values). The larger the window, the more blurring will be done, but the code will also be slower. I'm choosing a window of *(7,7)* pixels, which is a box 7 pixels long and 7 pixels wide. The last value is not important, so I'm setting it to the default*(0)*.
+
+```
+# Show all 3 images
+cv2.imshow("Original Image", image)
+cv2.imshow("Gray Image", gray_image)
+cv2.imshow("Blurred Image", blurred_image)
+
+cv2.waitKey(0)
+```
+
+And now we show all images.
+
+```
+python blur.py ship.jpg
+```
+
+![](images/image2.png)
+
+## Edge detection
+
+Edge detection is a very useful function in image processing. Edge detection means detecting where the edges of an object in an image are. The algorithm looks for things like change in color, brightness etc to find the edges.
+
+The most pioneering work in this domain was done by John Canny, and his algorithm is still the most popular. You don't need to understand how the algorithms work under the hood to use them, but if you are interested in learning more, Wikipedia has good summaries:
+
+<http://en.wikipedia.org/wiki/Edge_detection>
+
+<http://en.wikipedia.org/wiki/Canny_edge_detector>
+
+We will jump straight into the code. Open edge_detect.py.
+
+```
+import cv2
+import sys
+
+# The first argument is the image
+image = cv2.imread(sys.argv[1])
+
+#conver to grayscale
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+#blur it
+blurred_image = cv2.GaussianBlur(gray_image, (7,7), 0)
+
+cv2.imshow("Orignal Image", image)
+```
+
+All this should be familiar, as it is similar to the last section.
+
+```
+canny = cv2.Canny(blurred_image, 10, 30)
+cv2.imshow("Canny with low thresholds", canny)
+```
+
+The function for Canny edge detection is, unsurprisingly, called *Canny()*. It takes three  arguments. The first is the image. The second and third are the lower and upper thresholds respectively. 
+
+The Canny edge detector detects edges by looking in the difference of pixel intensities. Now, I could spend hours explaining what that means, or I could just show you. So bear with me for a moment. For the first example above, I'm using low thresholds of *10, 30*, which means a lot of thresholds will be detected.
+
+```
+canny2 = cv2.Canny(blurred_image, 50, 150)
+cv2.imshow("Canny with high thresholds", canny2)
+```
+
+In this second example, we will use higher thresholds. Let's see what that means.
+
+
+```
+python edge_detect.py ship.jpg
+```
+
+![](images/image3.png)
+
+The leftmost is the original image. The middle is the one with low thresholds. You can see it detected a lot of edges. Look inside the ship. The algorithm detected the windows of the ship, as well as a small hatch near the front. But it also detected a lot of unnecessary details in the sea. The rightmost image has the high thresholds. It didn't detect the unneeded info in the sea, but it also failed to detect the windows in the ship.
+
+So how will you choose the thesholds? One thing I will say repeatedly in this chapter- there are no fixed answers. Try different values till you find ones you like. This is because the values will depend on your application and the type of images you are working with.
+
+Before I close this section, a bit of info about the image. I took the photo in Southampton when on a river cruise. The ship is at the exact place where the Titanic sailed from. That parking spot costs £1000 a day (around $1500). Still cheap for a £30 million ship.
+
+## Count objects
+
+Okay, now that we can detect the edges of an object, we can do useful stuff with it. Like detect objects. Let's start.
+
+```
+import cv2
+import sys
+# Read the image
+image = cv2.imread(sys.argv[1])
+#convert to grayscale
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#blur it
+blurred_image = cv2.GaussianBlur(gray_image, (7,7), 0)
+# Show both our images
+cv2.imshow("Original image", image)
+cv2.imshow("Blurred image", blurred_image)
+# Run the Canny edge detector
+canny = cv2.Canny(blurred_image, 30, 100)
+cv2.imshow("Canny", canny)
+```
+
+This code is the same as before. We have detected the edges in the image and the blurred image.
+
+![](images/image4.jpg)
+
+![](images/image5.jpg)
+
+Now, we are going to find the contours (which is just a fancy word for edges) in the image. If you are wondering why we ned to do that, since we can clearly see the edges in the image above, it's because the code isn't aware of it. The code below finds the edges programatically:
+
+```
+contours, hierarchy = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+```
+
+The *findContours()* finds the contours in the given image. The first option is the output of the canny edge detector. *RETR_EXTERNAL* tells OpenCv to only find the outermost edges (as you can find countours within countours). The second arguments tells OpenCv to use the simple approximation.
+
+The function returns two values: A list of contours found, and the hierarchy (which we'll ignore. It is used if you have many countours embedded within others).
+
+The *contours* return value is a simple list that contains the number of countours found. Taking the length of it will give us number of objects found.
+
+```
+print("Number of objects found = ", len(contours))
+```
+
+```
+cv2.drawContours(image, contours, -1, (0,255,0), 2)
+cv2.imshow("objects Found", objects)
+cv2.waitKey(0)
+```
+
+Finally, we use the *drawContours()* function. The first argument is the image we want to draw on. The second is the countours we found in the last function. The 3rd is -1, to say that we want all contours to be drawn (we can choose to only draw certain contours). The fourth is the color, green in this case, and the last is the thickness.
+
+Finally, we show the image.
+
+![](images/image6.jpg)
+![](images/image7.jpg)
+
+
+If you want to use your own images, make sure they are not too high quality. In the first attempt, I was using Hd quality images, and opencv was detecting carpet swirls as objects. It also detected shadows as objects (including my own). Though blurring is supposed to get rid of this, if the photo is of very high quality, you will need to do a lot of blurring.
+
+Also, make sure you have a plain background. If you have fancy tiles or something in the background, that will be detected too.
+
+
+## Face Detection
+
+**Face detection with OpenCV**
+
+OpenCV uses machine learning algorithms to search for faces within a picture. For something as complicated as a face, there isn’t one simple test that will tell you if it found a face or not. Instead, there are thousands of small patterns/features that must be matched. The algorithms break the task of identifying the face into thousands of smaller, bite-sized tasks, each of which is easy to solve. These tasks are also called classifiers.
+
+For something like a face, you might have 6,000 or more classifiers, all of which must match for a face to be detected (within error limits, of course). But therein lies the problem: For face detection, the algorithm starts at the top left of a picture and moves down across small blocks of data, looking at each block, constantly asking, “Is this a face? … Is this a face? … Is this a face?” Since there are 6,000 or more tests per block, you might have millions of calculations to do, which will grind your computer to a halt.
+
+![](images/face1.jpg)
+
+The image above is a rough example of how face detection works. The algorithm breaks the image into small blocks of pixels, and does the face detection on each.
+
+To get around this, OpenCV uses cascades. What’s a cascade? The best answer can be found from the dictionary: A waterfall or series of waterfalls
+
+Like a series of waterfalls, the OpenCV cascade breaks the problem of detecting faces into multiple stages. For each block, it does a very rough and quick test. If that passes, it does a slightly more detailed test, and so on.
+
+![](images/face2.jpg)
+
+The algorithm may have 30-50 of these stages or cascades, and it will only detect a face if all stages pass. The advantage is that the majority of the pictures will return negative during the first few stages, which means the algorithm won’t waste time testing all 6,000 features on it. Instead of taking hours, face detection can now be done in real time.
+
+**Cascades in practice**
+
+Though the theory may sound complicated, in practice it is quite easy. The cascades themselves are just a bunch of XML files that contain OpenCV data used to detect objects. You initialize your code with the cascade you want, and then it does the work for you.
+
+Since face detection is such a common case, OpenCV comes with a number of built-in cascades for detecting everything from faces to eyes to hands and legs. There are even cascades for non-human things. For example, if you run a banana shop and want to track people stealing bananas, [this guy](http://coding-robin.de/2013/07/22/train-your-own-opencv-haar-classifier.html) has built one for that!
+
+## Understanding the code
+
+Let’s break down the actual code, face_detect.py.
+
+```
+# Get user supplied values
+imagePath = sys.argv[1]
+cascPath = sys.argv[2]
+```
+
+You first pass in the image and cascade names as command-line arguments. We’ll use the Abba image as well as the default cascade for detecting faces provided by OpenCV.
+
+```
+# Create the haar cascade
+faceCascade = cv2.CascadeClassifier(cascPath)
+```
+
+Now we create the cascade and initialize it with our face cascade. This loads the face cascade into memory so it’s ready for use. Remember, the cascade is just an XML file that contains the data to detect faces.
+
+```
+# Read the image
+image = cv2.imread(imagePath)
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+```
+
+Here we read the image and convert it to grayscale. Many operations in OpenCv are done in grayscale.
+
+```
+# Detect faces in the image
+faces = faceCascade.detectMultiScale(
+    gray,
+    scaleFactor=1.1,
+    minNeighbors=5,
+    minSize=(30, 30),
+    flags = cv2.cv.CV_HAAR_SCALE_IMAGE
+)
+```
+
+This function detects the actual face – and is the key part of our code, so let’s go over the options.
+
+The detectMultiScale function is a general function that detects objects. Since we are calling it on the face cascade, that’s what it detects. The first option is the grayscale image.
+
+The second is the scaleFactor. Since some faces may be closer to the camera, they would appear bigger than those faces in the back. The scale factor compensates for this.
+
+The detection algorithm uses a moving window to detect objects. minNeighbors defines how many objects are detected near the current one before it declares the face found. minSize, meanwhile, gives the size of each window.
+
+I took commonly used values for these fields. In real life, you would experiment with different values for the window size, scale factor, etc., until you find one that best works for you.
+
+The function returns a list of rectangles where it believes it found a face. Next, we will loop over where it thinks it found something.
+
+```
+print "Found {0} faces!".format(len(faces))
+
+# Draw a rectangle around the faces
+for (x, y, w, h) in faces:
+    cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+```
+
+This function returns 4 values: the x and y location of the rectangle, and the rectangle’s width and height (w , h).
+
+We use these values to draw a rectangle using the built-in rectangle() function.
+
+```
+cv2.imshow("Faces found" ,image)
+cv2.waitKey(0)
+```
+
+In the end, we display the image, and wait for the user to press a key.
+Checking the results
+
+Let’s test against the Abba photo:
+
+```
+$ python face_detect.py abba.png haarcascade_frontalface_default.xml
+```
+
+![](images/abba.jpg)
+
+![](images/image8.jpg)
+
+That worked. How about another photo:
+
+![](images/little_mix.jpg)
+
+![](images/image9.jpg)
+
+That… is not a face. Let’s try again. I changed the parameters and found that setting the scaleFactor to 1.2 got rid of the wrong face.
+
+![](images/image10.jpg)
+
+What happened? Well, the first photo was taken fairly close up with a high quality camera. The second one seems to have been taken from afar and possibly from a mobile phone. This is why the scaleFactor had to be modified. As I said, you’ll have to tweak the algorithm on a case by case basis to avoid false positives.
+
+Be warned though that since this is based on machine learning, the results will never be 100% accurate. You will get good enough results in most cases, but occasionally the algorithm will identify incorrect objects as faces.
+
+
+## Extending to a webcam
+
+So what if you want to use a webcam? OpenCV grabs each frame from the webcam and you can then detect faces by processing each frame. You do the same processing as you do with a single image, except this time you do it frame by frame. This will require a lot of processing, though. I saw close to 90% CPU usage on my laptop.
+
+```
+import cv2
+import sys
+
+cascPath = sys.argv[1]
+faceCascade = cv2.CascadeClassifier(cascPath)
+```
+
+This should be familiar to you. We are creating a face cascade, as we did in the image example.
+
+```
+if len(sys.argv) < 2:
+    video_capture = cv2.VideoCapture(0)
+else:
+    video_capture = cv2.VideoCapture(sys.argv[2])
+```
+
+This line sets the video source to the default webcam (*VideoCapture(0)* always points to the default webcam) if no video file is specified. Else, it loads the file. 
+
+
+```
+while True:
+    # Capture frame-by-frame
+    ret, frame = video_capture.read()
+```
+
+Here, we capture the video. The read() function reads one frame from the video source, which in this example is the webcam. This returns:
+
+* The actual video frame read (one frame on each loop)
+*  A return code
+
+The return code tells us if we have run out of frames, which will happen if we are reading from a file. This doesn’t matter when reading from the webcam, since we can read forever.
+
+```
+# Capture frame-by-frame
+ret, frame = video_capture.read()
+
+gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+faces = faceCascade.detectMultiScale(
+    gray,
+    scaleFactor=1.1,
+    minNeighbors=5,
+    minSize=(30, 30),
+    flags=cv2.cv.CV_HAAR_SCALE_IMAGE
+)
+
+# Draw a rectangle around the faces
+for (x, y, w, h) in faces:
+    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+# Display the resulting frame
+cv2.imshow('Video', frame)
+```
+
+Again, this code should be familiar as it's the same as before. We are merely searching for the face in our captured frame.
+
+```
+if cv2.waitKey(1) & 0xFF == ord('q'):
+    break
+```
+
+We wait for the ‘q’ key to be pressed. If it is, we exit the script.
+
+```
+# When everything is done, release the capture
+video_capture.release()
+cv2.destroyAllWindows()
+```
+
+Here, we are just cleaning up.
+
+If you want to use the webcam:
+
+```
+python webcam_face_detect.py haarcascade_frontalface_default.xml
+
+```
+
+If you are using the VM:
+
+```
+python webcam_face_detect.py haarcascade_frontalface_default.xml webcam.mp4 
+
+```
+
+This will play the file I provided. It may not work on Windows unless you have a video decoder like Ffmpeg installed. I couldn't get Ffmpeg working on Windows with OpenCv, but it works out of the box on Linux. If you are on Windows, I recommend a webcam. The webcam won't work if you are using my VM, so you have to use the video file.
+
+![](images/image11.jpg)
+
+So, that’s me with a passport sized photo in my hand. And you can see that the algorithm tracks both the real me and the photo me.
+
+Like I said in the last section, machine learning based algorithms are rarely 100% accurate. We aren’t at the stage where Robocop driving his motorcycle at 100 mph can track criminals using low quality CCTV cameras… yet.
+
+The code searches for the face frame by frame, so it will take a fair amount of processing power. For example, on my five year old laptop, it took almost 90% of the CPU.
+
+## Motion detection
+
+We'll use our webcam example, and extend it so it can detect motion.
+
+How do you detect motion? You take two consecutive frames, and find the difference between them. If the difference is minor, that means no motion occurred. If you find a large difference between frames, then motion must have occurred.
+
+
+```
+#!/usr/bin/python
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+import cv2
+import sys
+import numpy as np
+
+if len(sys.argv) < 2:
+    video_capture = cv2.VideoCapture(0)
+else:
+    video_capture = cv2.VideoCapture(sys.argv[2])
+```
+
+This code is the same as before. We are creating a video capture instance.
+
+```
+# Read two frames, last and current, and convert them to gray.
+# Since this is the first time, read last_frame as well.
+ret, last_frame = video_capture.read()
+last_frame = cv2.cvtColor(last_frame, cv2.COLOR_BGR2GRAY)
+
+ret, current_frame = video_capture.read()
+current_frame = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
+```
+
+Here we read two frames and convert them to gray. You may notice we are doing this outside the while loop. This is because we want two consecutive frames captured before the main loop starts. We call them *last_frame* and *current_frame*. Why do we need two? So that we can see the difference between them.
+
+```
+i = 0
+while(True):
+    # We want two frames- last and current, so that we can calculate the different between them.
+    # Store the current frame as last_frame, and then read a new one
+    last_frame = current_frame 
+```
+
+We enter our while loop now, and the first thing we do is store the *current_frame* as the last frame. That's because we are going to read a new frame, and each loop iteration, the *current_frame* from last iteration will become the *last_frame* of this iteration.
+
+```
+     ret, current_frame = video_capture.read()
+     current_frame = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
+```
+
+We read a new frame and convert it to grayscale.
+
+```
+    # Find the absolute difference between frames
+    diff = cv2.absdiff(last_frame, current_frame)   
+```
+
+We use the inbuilt *absdiff()* to find the absolute difference between consecutive frames.
+
+Now, I have some code that will show us what the difference is. Before that, you must understand that OpenCv video and image frames are just numpy arrays that contain the values of all the pixels in the image or video. If you want, you can do something like to print the whole array.
+
+```
+    print(current_frame)
+    
+    [[[10 35  5]
+  [ 9 34  4]
+  [13 32  8]
+  ...,
+  [87 66 68]
+  [87 70 62]
+  [86 69 61]]
+
+ [[12 34  9]
+  [12 34  9]
+  [19 31  8]
+  ...,
+  [87 66 68]
+  [86 69 61]
+  [86 69 61]]
+
+ [[14 32 10]
+  [14 32 10]
+  [21 30  9]
+  ...,
+  [85 68 65]
+  [86 69 61]
+  [86 69 61]]
+```
+
+The above is just a snippet-you can see the array is huge.
+
+What I will do is just print the average of the array.
+
+I have some code that I've commented out. It prints the values of the average of the current_frame and the difference. I only print once every ten times, to avoid too much data on the screen.
+
+``` 
+# Uncomment the below to see the difference values
+'''
+i += 1
+if i % 10 == 0:
+    i = 0
+    print np.mean(current_frame)
+    print np.mean(diff)
+'''
+```
+
+Here is some sample output:
+
+```
+Current frame =  83.9231391059
+Diff =  5.06139973958
+Current frame =  84.3319932726
+Diff =  4.31867404514
+Current frame =  88.6718229167
+Diff =  0.461206597222
+Current frame =  88.5050021701
+Diff =  0.156022135417
+Current frame =  89.7750976562
+Diff =  2.8298578559
+```
+
+The above is without motion. With motion:
+
+```
+Current frame =  82.5932790799
+Diff =  7.46467230903
+```
+
+As you can see, the average of the difference frame is very little when you aren't moving. Try it yourself (if you have a webcam). Sit silently for a few seconds, and you will see the difference is 1.0 or less. Start moving around, and it will jump to 10 or even more.
+
+That's how I got the values I'm going to use- by experimentation:
+
+```
+    # If difference is greater than a threshold, that means motion detected.
+    if np.mean(diff) > 10:
+        print("Achtung! Motion detected.")
+```
+
+If the average difference is greater than 10 (a value I got by experiment), I take it to mean motion has been detected, and print the warning.
+
+```
+    # Display the resulting frame
+    cv2.imshow('Video',diff)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+# When everything done, release the capture
+video_capture.release()
+cv2.destroyAllWindows()
+```
+
+Finally, we display our difference image and exit.
+
+![](images/image12.jpg)
+
+![](images/image13.jpg)
+
+Here is another example taken from my webcam. In the first image, I'm just sitting there. In the second one, I move a little:
+
+![](images/motion1.jpg)
+
+![](images/motion2.jpg)
+
+
+## Detect Color of shirt
+
+I wanted to try something different for this one, so I decided to give SimpleCv a try.
+
+SimpleCv is a library based on OpenCv, though it was designed to be much simpler to learn.
+
+Is it?
+
+In many ways, yes. It is a lot simpler.
+
+However, it's still very new and rough around the edges. For one, the installation process sucks. On both Windows and Linux, it tried to reinstall all the libraries( numpy, scipy, OpenCv etc) even though I had them installed already. On Windows, it was easy to press cancel and force the installation of libraries to stop, but on Linux, it wouldn't let me go ahead. So I just had to reinstall everything. Luckily, it didn't cause a problem for me, but your experience may vary. You have been warned. You might want to use a virtual machine if you don't want to mess up your system.
+
+The other problem was that SimpleCv is based on Pygame, which is a really crappy library. The first time I ran a webcam example, it crashed my PC. Luckily, I have figured out the quirks of Pygame, but it's still not something I like.
+
+Anyway, let's get started. These are the photos I'm working with.
+
+![](images/blue_train.jpg)
+ 
+![](images/red_train.jpg)
+
+![](images/red_test.jpg)
+
+
+![](images/blue_test.jpg)
+
+Even though they look similar, they are completely different shirts.
+
+I'm going to use a method borrowed from machine learning. I'll have two shirts that I'll use for training (though in this case training is just me looking at the results). Then I'll have another two shirts to check if my analysis was correct.
+
+### Training
+
+```
+
+#!/usr/bin/python
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from SimpleCV import *
+```
+
+We import  what we need.
+
+```
+# The location in the picture which only has the shirt.
+# Format is: x, y, x_size, y_size
+# I found the x , y positions by opening the file in Gimp.
+shirt_location = (240,378,120,120)
+```
+
+One problem is that in any image, you will have a lot of background colors that will show up in any analysis. We need a portion of the shirt that contains only color.
+
+The way I took the photo means the lower part of the screen contains only the shirt. I used Gimp (Photoshop's ugly cousin) to find out the co-ordinates of this place. I found the *x,y* co-ordinates to be 240 and 378. The next two values (120, 120) merely select a rectangle of that size from the x,y co-ordinates.
+
+If you open the code in an editor, you will note there is a function *find_rgb(blobs)*. We'll come to that later. First, let's look at the code.
+
+```
+# Read the red and blue shirts
+red = Image("red_train.jpg")
+red2=red.crop(shirt_location)
+
+```
+
+I read the file in, using the Image function. I then crop it to the part that only contains red. Let's see what the shirt and the cropped shirt look like. But before that, we have to do some black magic. I found that was to stop Pygame crashing. Again, there may be better ways of doing this.
+
+```
+show_im = red.show()
+raw_input("Press Enter to continue")
+show_im.quit()
+show_im = red2.show()
+raw_input("Press Enter to continue")
+show_im.quit()
+```
+
+If you just do a *red.show()* it will never exit, and you'll have to kill Python to get rid of it. So I create a window called *show_im*:
+
+```
+show_im = red.show()
+```
+
+and later kill it:
+
+```
+show_im.quit()
+```
+
+But I don't want it to die immediately, so I add user input in between.
+
+```
+raw_input("Press Enter to continue")
+```
+
+So the complete code to display an image is:
+
+```
+show_im = red.show()
+raw_input("Press Enter to continue")
+show_im.quit()
+```
+
+This is what we get:
+
+![](images/image14.jpg)
+
+Now, we'll print the RGB values found in our shirt:
+
+```
+# See the color
+print(red2.meanColor()) 
+
+(41.038071895424835, 1.3220588235294117, 194.17328431372547)
+```
+
+Like OpenCv, simplecv prints the values as blue, green, red. We can see that the red portion has the highest value.
+
+Let's read the blue shirt now.
+
+```
+
+blue = Image("blue_train.jpg")
+blue2=blue.crop(shirt_location)
+
+print(blue2.meanColor()) 
+
+(171.3142973856209, 61.778431372549015, 24.947303921568626)
+
+```
+
+This time, blue has the highest value.
+
+The maximum values for the rgb portion is 255. You'll notice that we are no where near that value. That's because in the real world, you'll rarely get pure red or blue. 
+
+Let's look at my shirt again.
+
+![](images/red_test.jpg)
+
+Even though it looks all red, it actually isn't. Due to the way the light falls, the shadows and other effects, some parts will be redder than others. Because of this, the whole shirt won't come up as red. The color of the shirt (which won't be pure red), the light conditions, camera exposure etc will affect the final color you get. To do a comparison, I used Gimp to create a pure red shirt. Even in Gimp (or Ms Paint), red is never pure red. I had to manually edit the rgb values to get the color I wanted. Have a look at the files red_ideal.jpg and blue_ideal.jpg.
+
+```
+red_ideal = Image("red_ideal.jpg")
+red_ideal = red_ideal.crop(shirt_location)
+# Pure red!
+red_ideal.meanColor() 
+
+(0.058333333333333334, 0.0, 254.0)
+
+blue_ideal = Image("blue_ideal.jpg")
+blue_ideal = blue_ideal.crop(shirt_location)
+
+# Pure blue!
+blue_ideal.meanColor() 
+
+(254.0, 0.0, 0.008333333333333333)
+```
+
+![](images/red_ideal.jpg)
+ 
+ 
+![](images/blue_ideal.jpg)
+
+There are many ways around this. The one I have chosen in based on trial and error, I'm sure you can find a better way.
+
+SimpleCv allows you to find blobs in the data. It defines blobs as segments of the picture with the same colour. So, my red shirt has many different shades of red, and each will show up as a different blob. The method I found was to take these blobs and average the rgb values in them. First, we find the blobs:
+
+```
+# Find the different colored blobs
+blob_red=red2.findBlobs()
+blob_blue=blue2.findBlobs()
+```
+
+*findBlobs()* returns a list of blobs SimpleCv found. I am now going to find the average rgb in these.
+
+Some explanation here. Why am I doing it this way? Because very rarely will we get pure red (or blue or green) values, I need to define what "red" is. This is not a philosophical question. "What is the meaning of red?" I mean, how do I define red by algorithm? For me, I'm going to say if the red part of rbg is greater than 150, while the blue and green parts are less than 70. You will never get a colour where the blue and green parts are zero, except in ideal cases, like the one I created in Gimp.
+
+The purpose of this script was to see what colour composition I found, which is why I found this file *color_train.py*, as it closely follows the process I followed to get the colours right.
+
+With that in mind, let's look at a function I wrote to get the most accurate values for the red green and blue components.
+
+```
+# Find rgb values
+red, green, blue = find_rgb(blob_red)
+```
+
+*find_rgb()* is a function I wrote. Let's look at that next.
+
+```
+def find_rgb(blobs):
+    '''
+    Find the RGB values in blobs of data. The fucntion loops over the blobs
+    and finds the average of the rgb values
+    Input: The output of the findBlobs() function
+    Output: The average rgb values are returned.
+    '''
+    red, green, blue = 0,0,0
+```
+
+I pass in the blobs we found, and inititalise the colours to zero.
+
+```
+ for blob in blobs:
+    colors = blob.meanColor()
+    red += colors[0]
+    green += colors[1]
+    blue += colors[2]
+
+```
+
+I loop over each blob found, and call the function *meanColor()* on it. Remember, this returns the red blue green valus as a list. I update my local color variables with this.
+
+```
+    red = red / len(blobs)
+    green = green / len(blobs)
+    blue = blue / len(blobs)
+```
+
+In the loop, I found the total value of rgb. I now need to find the average, so I divde the colours by the length of blobs (which will give me the average color per blob).
+
+Like I said, the reason I'm doing it this way is because it gave me the most accurate results, though the official SimpleCv tutorial doesn't use this method.
+
+```
+    return red, green, blue
+```
+
+Finally, I return the results. Coming back to my code:
+
+```
+# Find rgb values
+red, green, blue = find_rgb(blob_red)
+```
+
+I capture the average rgb values, and print them.
+
+```
+print("The RGB values for the red shirt are: red {} green {} blue {}".format(red, green, blue))
+
+The RGB values for the red shirt are: red 200.841750984 green 1.5193715676 blue 43.4040374198
+
+```
+
+And then I do the same for the blue shirt.
+
+```
+red, green, blue = find_rgb(blob_blue)
+print("The RGB values for the blue shirt are: red {} green {} blue {}".format(red, green, blue))
+
+The RGB values for the blue shirt are: red 29.0385591969 green 64.2966580905 blue 173.929505814
+```
+
+The only purpose of this file was to see what sort of values I got for different shirts. Normally, this type of data would be gathered using something like IDLE or IPython, but I put it in a file to make it easier to teach. Now that we know what to expect, we can use this data to find colours.
+
+
+
+### Testing
+
+Open the file *color_test.py* and have a look at it. The first part is the same as before:
+
+```
+#!/usr/bin/python
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from SimpleCV import *
+import sys
+# The location in the picture which only has the shirt.
+# Format is: x, y, x_size, y_size
+# I found the x , y positions by opening the file in Gimp.
+shirt_location = (240,378,120,120)
+def find_rgb(blobs):
+    '''
+    Find the RGB values in blobs of data. The fucntion loops over the blobs
+    and finds the average of the rgb values
+    Input: The output of the findBlobs() function
+    Output: The average rgb values are returned.
+    '''
+    red, green, blue = 0,0,0
+    for blob in blobs:
+    colors = blob.meanColor()
+    red += colors[0]
+    green += colors[1]
+    blue += colors[2]
+    red = red / len(blobs)
+    green = green / len(blobs)
+    blue = blue / len(blobs)
+    return red, green, blue
+```
+
+I am using two different shirts:
+
+![](images/red_test.jpg)
+ 
+![](images/blue_test.jpg)
+
+
+Now comes our new code:
+
+```
+# Get the shirt and crop it to the required location.
+shirt = sys.argv[1]
+shirt = Image(shirt)
+shirt = shirt.crop(shirt_location)
+```
+
+Since this is the real code, we read the shirt from the command line. We then crop it to the desired location.
+
+```
+# Find rgb values
+blob = shirt.findBlobs()
+red, green, blue = find_rgb(blob)
+print("The RGB values for the shirt are: red {} green {} blue {}".format(red, green, blue))
+```
+
+As before, we find the average rgb value in the shirt.
+
+```
+if (red > 150) and (blue < 70) and (green < 70):
+    print("Found a red shirt")
+elif (blue > 150) and (red < 70) and (green < 70):
+    print("Found a blue shirt")
+else:
+    print("Unknown color")
+```
+
+This is where the data we gathered in the previous example comes in handy. I'm using values that I've found from a few runs. So I define red as: *red component > 150, blue and green < 70*. In most cases, we will be well above/below these ranges, but I'm using worst cases.
+
+Let's run the code:
+
+```
+pyeng$ ./color_test.py red_test.jpg 
+
+Shirt BGR values:  (28.12549019607843, 3.0028594771241828, 123.04158496732025)
+The RGB values are: Red 182.263394683 Green 11.891206544 Blue 55.6785276074
+Found a red shirt
+
+pyeng$ ./color_test.py blue_test.jpg 
+
+Shirt BGR values:  (94.06029411764705, 14.675735294117645, 16.29910130718954)
+The RGB values are: Red 23.1673629949 Green 25.1368928619 Blue 150.585883959
+Found a blue shirt
+```
+
+**Conclusion** 
+
+The code isn't ideal. It depends too much on light effects, shadows and other uncontrollable things. However, it does show the principles and gave us a chance to play with SimpleCv.
+
+If you want to do this in real life, it is possible to get it working with real data, as long as you control the photography effects. This is actually not that hard, as professional photographers always use good lighting. Just make sure the shirt is always in the same location, otherwise your job will become very hard. It can be anywhere, as long as it's consistent.
+
+ For example, I found this photo on Amazon (I won't include the photo in my source code for copyright reasons):
+
+![](images/amazon_foto.jpg)
+
+I downloaded the photo, and found that the shirt was in the same place I was expecting (which made my task easier, as otherwise I'd have to crop the photo myself). So I ran the code:
+
+![](images/amazon.jpg)
+
+```
+> python .\color_test.py .\amazon.jpg
+(27.21326388888889, 8.694513888888888, 154.62069444444444)
+The RGB values for the shirt are: red 188.795138889  green 24.8121527778  blue 43.6024305556
+Found a red shirt
+```
+
