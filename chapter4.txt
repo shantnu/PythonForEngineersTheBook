@@ -17,7 +17,7 @@ Series is like numpy's array/dictionary, though it comes with a lot of extra fea
 
 You should get Pandas if you installed Anaconda on Windows. On Linux, run
 
-```
+``` bash
 pip install pandas
 ```
 
@@ -34,22 +34,22 @@ I'll also put it in the Github directory, so you don't have to download it. Make
 
 Let's get started then.
 
-```
+``` python
 import pandas as pd
 import matplotlib.pyplot as plt
 ```
 
 Pandas is imported as *pd* to save typing, in the same way we import numpy as *np*.
 
-```
+``` python
 data = pd.ExcelFile("Obes-phys-acti-diet-eng-2014-tab.xls")
-print  data.sheet_names
+print(data.sheet_names)
 ```
 
 We are opening the *xls* file. The great thing about pandas is that you can open Excel files directly. Normally, most libraries can only work with *csv* files. We then print all the sheet names.
 
 ```
-[u'Chapter 7', u'7.1', u'7.2', u'7.3', u'7.4', u'7.5', u'7.6', u'7.7', u'7.8', u'7.9', u'7.10']
+['Chapter 7', '7.1', '7.2', '7.3', '7.4', '7.5', '7.6', '7.7', '7.8', '7.9', '7.10']
 ```
 
 For those of you not comfortable with Excel, a sheet is one "page", as it were, of data. Rather than having all the data in one huge unmanageable sheet, users break the data into multiple sheets. Above, we printed all the available sheets.
@@ -64,16 +64,16 @@ There are four columns: *Year*, *total*, *males* and *females*. The *Year* colum
 
 I'll show you two ways to read in data. In the first one, you define the header columns yourself.
 
-```
+``` python
 
 # Define the columns to be read
 columns1 = ['year', 'total', 'males', 'females']
 
 ```
 
-So I'm defining a list with four header entries: 'year', 'total', 'males' and 'females'. 
+So I'm defining a list with four header entries: 'year', 'total', 'males' and 'females'.
 
-```
+``` python
 data_gender = data.parse(u'7.1', skiprows=4, skipfooter=14, names=columns1)
 ```
 
@@ -81,10 +81,10 @@ We read sheet *7.1*. If you look at the actual sheet, the top 4 and bottom 14 ro
 
 We then print *data_gender*.
 
+``` python
+print(data_gender)
 ```
-
-print data_gender
-
+```
        year  total  males  females
 0       NaN    NaN    NaN      NaN
 1   2002/03   1275    427      848
@@ -96,7 +96,7 @@ print data_gender
 
 If you look at the entry for 0, it is *NaN*.  Why's that? Look at the original spreadsheet. There is an empty space on line 6, to make the sheet easier to read. Since it is empty, it is read as Not A Number (NaN) by pandas. How do we get rid of it? Easy.
 
-```
+``` python
 # Remove the N/A from the data
 data_gender.dropna(inplace = True)
 ```
@@ -114,12 +114,13 @@ Using the inbuilt *dropna()* function, of course. *inplace = True* means modify 
 
 we see the *NaN* values are now gone. There is another problem, though. We have an index at the beginning (the first column, going 1,2,3....). We don't need an index. Instead, we want the year to be the index. Let's fix that next.
 
-```
+``` python
 data_gender.set_index('year', inplace=True)
-print data_gender
-
+print(data_gender)
+```
+```
          total  males  females
-year                          
+year
 2002/03   1275    427      848
 2003/04   1711    498     1213
 2004/05   2035    589     1442
@@ -128,7 +129,7 @@ year
 
 That's better.
 
-```
+``` python
 # Plot all
 data_gender.plot()
 plt.show()
@@ -144,49 +145,52 @@ We can see that while obesity for men has gone up, obesity for women has gone up
 
 We will read the  data slightly differently this time. Last time, we defined the headers ourself. This time, we'll let pandas pick them up.
 
-```
+``` python
 # Read 2nd section, by age
-data_age  = data.parse(u'7.2', skiprows=4, skipfooter=14)
-print data_age
-
-   Unnamed: 0  Total  Under 16  16-24  25-34  35-44  45-54  55-64  65-74  
-0         NaN    NaN       NaN    NaN    NaN    NaN    NaN    NaN    NaN   
-1     2002/03   1275       400     65    136    289    216     94     52  
+data_age  = data.parse('7.2', skiprows=4, skipfooter=14)
+print(data_age)
+```
+```
+   Unnamed: 0  Total  Under 16  16-24  25-34  35-44  45-54  55-64  65-74
+0         NaN    NaN       NaN    NaN    NaN    NaN    NaN    NaN    NaN
+1     2002/03   1275       400     65    136    289    216     94     52
 
 
 ```
 
 If you remember, the year column didn't have a header, which is why pandas names it *Unnamed*. Let's rename it:
 
-```
+``` python
 # Rename unames to year
-data_age.rename(columns={u'Unnamed: 0': u'Year'}, inplace=True)
-print data_age
-
-       Year  Total  Under 16  16-24  25-34  35-44  45-54  55-64  65-74  
-0       NaN    NaN       NaN    NaN    NaN    NaN    NaN    NaN    NaN   
-1   2002/03   1275       400     65    136    289    216     94     52   
+data_age.rename(columns={'Unnamed: 0': 'Year'}, inplace=True)
+print(data_age)
+```
+```
+       Year  Total  Under 16  16-24  25-34  35-44  45-54  55-64  65-74
+0       NaN    NaN       NaN    NaN    NaN    NaN    NaN    NaN    NaN
+1   2002/03   1275       400     65    136    289    216     94     52
 
 ```
 
 That's better. Let's drop the Nan and set the index to year.
 
-```
+``` python
 # Drop empties and reset index
 data_age.dropna(inplace=True)
 data_age.set_index('Year', inplace=True)
-print data_age
-
-         Total  Under 16  16-24  25-34  35-44  45-54  55-64  65-74  
-Year                                                                 
-2002/03   1275       400     65    136    289    216     94     52   
-2003/04   1711       579     67    174    391    273    151     52   
+print(data_age)
+```
+```
+         Total  Under 16  16-24  25-34  35-44  45-54  55-64  65-74
+Year
+2002/03   1275       400     65    136    289    216     94     52
+2003/04   1711       579     67    174    391    273    151     52
 
 ```
 
 Let's plot all the ages first.
 
-```
+``` python
 data_age.plot()
 plt.show()
 ```
@@ -195,7 +199,7 @@ plt.show()
 
 You see a big problem: The *Total* column is huge and suppresses the other graphs. So we need to get rid of it to make the graph clearer.
 
-```
+``` python
 # Plotting everything cause total to override everything. So drop it.
 
 # Drop the total column and plot
@@ -205,7 +209,7 @@ data_age_minus_total = data_age.drop('Total', axis = 1)
 
 The *drop()* function can drop entries from an table. Here, we are dropping the *Total* column.
 
-```
+``` python
 data_age_minus_total.plot()
 plt.show()
 ```
@@ -219,9 +223,10 @@ What if we want to compare age groups? How do children compare to adults?
 
 In Pandas, you can view any column by doing *data_age[column_name]*.
 
+``` python
+print(data_age['Under 16'])
 ```
-print data_age['Under 16']
-
+```
 Year
 2002/03    400
 2003/04    579
@@ -232,7 +237,7 @@ Year
 
 This gives the data for just the under 16s. We can plot any age group this way.
 
-```
+``` python
 
 #Plot children vs adults
 data_age['Under 16'].plot(label = "Under 16")
@@ -297,14 +302,14 @@ Pandas has a function to read plain text files, which is a lot similar to numpy'
 
 On to the code.
 
-```
+``` python
 user_columns = ['user_id', 'age', 'sex']
 
 ```
 
 We declare *user_columns* for the three entries we want to read from *u.user*. Note that *u.user* has more than three entries per row, but we will ignore the others.
 
-```
+``` python
 users = pd.read_csv('u.user', sep='|', names=user_columns, usecols=range(3))
 ```
 
@@ -312,7 +317,7 @@ We will use the *read_csv* function to read the file, even though it isn't techn
 
 In exactly the same way, we load the other values as well:
 
-```
+``` python
 rating_columns = ['user_id', 'movie_id', 'rating']
 ratings = pd.read_csv('u.data', sep='\t', names=rating_columns,  usecols=range(3))
 
@@ -322,7 +327,7 @@ movies = pd.read_csv('u.item', sep='|', names=movie_columns, usecols=range(2))
 
 Now comes the important part. The data in the movielens dataset is spread over multiple files. But that is no good to us. We need to merge it together, so we can analyse it in one go. If you have used Sql, you will know it has a JOIN function to join tables. Pandas has something similar.
 
-```
+``` python
 # create one merged DataFrame
 movie_ratings = pd.merge(movies, ratings)
 movie_data = pd.merge(movie_ratings, users)
@@ -332,7 +337,7 @@ The *merge()* function will do the same thing. It will take two different DataFr
 
 So for the first merge:
 
-```
+``` python
 movie_ratings = pd.merge(movies, ratings)
 ```
 
@@ -340,7 +345,7 @@ pandas will see that *movie_id* is common between *movies* and *ratings*, so wil
 
 We then merge this newly created *movie_ratings* with *users*:
 
-```
+``` python
 movie_data = pd.merge(movie_ratings, users)
 ```
 
@@ -348,33 +353,33 @@ Again, pandas will figure out *user_id* is common and merge around that.
 
 The final result is a dataset that contains all the info we need, so we can start working on it.
 
-```
+``` python
 # Top rated movies
-print "Top rated movies (overall): \n" , movie_data.groupby('title').size().order(ascending=False)[:20]
+print("Top rated movies (overall):\n", movie_data.groupby('title').size().sort_values(ascending=False)[:20]
 ```
 
 The first thing we are going to do is find movies which have the most ratings. The code above may look big and confusing, but this is actually a feature of Python: You can chain multiple commands. Let's break it down.
 
-```
+``` python
  movie_data.groupby('title')
 ```
 
 The *groupby()* function allows you to group the data by a chosen column (remember, the data in normally printed by index. Here, we are saying arrange the data by title, not index).
 
-```
+``` python
 movie_data.groupby('title').size()
 ```
 
 After we have the movies by title, we call the *size()* function to arrange them by size. Normall, this is in ascending order, so:
 
-```
-movie_data.groupby('title').size().order(ascending=False)[:20]
+``` python
+movie_data.groupby('title').size().sort_values(ascending=False)[:20]
 ```
 
-we call the *order(ascending=False)* function, which arranged the data in descending order (so movies with more ratings appear at top). Finally, we use *[:20]* to only show the top 20 movies.
+we call the *sort_values(ascending=False)* function, which arranged the data in descending order (so movies with more ratings appear at top). Finally, we use *[:20]* to only show the top 20 movies.
 
 ```
-Top rated movies (overall): 
+Top rated movies (overall):
 title
 Star Wars (1977)                    583
 Contact (1997)                      509
@@ -407,32 +412,33 @@ Let's compare how the tastes of teenagers(13-19) vs the oldies (60+) differ.
 
 If you want to see all movies rated by people greater than 60 years, the easiest way is:
 
-```
+``` python
 movie_data[movie_data.age > 60]
 ```
 
 You just pass *movie_data.age > 60* to itself, and pandas will return a DataFrame which meets this condition. Let's do that now:
 
-```
+``` python
 oldies = movie_data[(movie_data.age > 60)]
 ```
 
 This will return the movies sorted by index. We want the movies sorted by number of votes (as above). Let's do that now:
 
-```
+``` python
 # Get the top rated ones
-oldies = oldies.groupby('title').size().order(ascending=False)
+oldies = oldies.groupby('title').size().sort_values(ascending=False)
+
 ```
 
 This is the same code as above, except this time we will see the top rated movies by old people only.
 
 Let's do the same for teenagers.
 
-```
+``` python
 # Extract movies for teens
 teens = movie_data[(movie_data.age > 12) & (movie_data.age < 20)]
 # Get the top rated ones
-teens = teens.groupby('title').size().order(ascending=False)
+teens = teens.groupby('title').size().sort_values(ascending=False)
 ```
 
 I'm doing the same as above, except this time I have two checks : *(movie_data.age > 12) & (movie_data.age < 20)*. We can have as many checks as we want. We could have added a *movie_data.gender == 'F'* if we wanted teenage girls.
@@ -441,9 +447,11 @@ In the next line, again we sort by number of votes.
 
 And now, let's print the results, only printing the top 10 results:
 
+``` python
+print("Top ten movies for oldies: \n", oldies[:10])
 ```
-print "Top ten movies for oldies: \n", oldies[:10]
-
+```
+Top ten movies for oldies:
 title
 English Patient, The (1996)    17
 Fargo (1996)                   12
@@ -456,9 +464,12 @@ Evita (1996)                    9
 L.A. Confidential (1997)        8
 Volcano (1997)                  8
 dtype: int64
-
-
-print "Top ten movies for teens: \n", teens[:10]
+```
+```python
+print("Top ten movies for teens: \n", teens[:10])
+```
+```
+Top ten movies for teens:
 Scream (1996)                    65
 Contact (1997)                   49
 Liar Liar (1997)                 47
@@ -476,13 +487,13 @@ You can see that Scream is only liked by teenagers. The English Patient is the o
 
 Let's now compare the the ratings by gender.
 
-```
+``` python
 ratings_by_title = movie_data.groupby('title').size()
 ```
 
 We get the ratings by size.
 
-```
+``` python
 popular_movies = ratings_by_title.index[ratings_by_title >= 250]
 ```
 
@@ -490,18 +501,17 @@ We want to avoid movies that have one review. So we are only selecting those mov
 
 The next feature is very powerful. Say you want to reshape a dataset. You could perform multiple select and join operations. But the *pivot_table()* function allows us to do this more simply. Here, I want to create a new table which has the ratings of the movies selected by gender.
 
-```
+``` python
 ratings_by_gender = movie_data.pivot_table('rating', index='title',columns='gender')
 ```
 
 The *pivot_table()* takes the *movie_data* and reshapes it. The first argument says we want to arrange it by rating. The second argument says that the index should be the title, and the third says the columns should be based on gender. Let's see what we get:
 
-```
-print "Top rated movies by women \n", top_movies_women.head()
-print "\n"
+``` python
+print("Top rated movies by women \n", top_movies_women.head())
 
 gender                                              F         M
-title                                                          
+title
 'Til There Was You (1997)                    2.200000  2.500000
 1-900 (1994)                                 1.000000  3.000000
 101 Dalmatians (1996)                        3.116279  2.772727
@@ -510,15 +520,15 @@ title
 
 You can see we have a new table that shows the ratings by gender. But it has a lot of movies that may only have one or two ratings.
 
-```
+``` python
 ratings_by_gender = ratings_by_gender.ix[popular_movies]
 ```
 
 The *.ix* is another way to select data. We are selecting the data that is in *popular_movies* only, which means it has at least 250 ratings. If I print *ratings_by_gender* now:
 
-```
+``` bash
 gender                               F         M
-title                                           
+title
 2001: A Space Odyssey (1968)  3.491228  4.103960
 Air Force One (1997)          3.690476  3.606557
 Alien (1979)                  3.660714  4.123404
@@ -532,19 +542,21 @@ That's better. We are getting movies we've heard of.
 
 Let's see which movies were top rated by women:
 
-```
-top_movies_women = ratings_by_gender.sort_index(by='F', ascending=False)
+``` python
+top_movies_women = ratings_by_gender.sort_values(by='F', ascending=False)
 ```
 
 You should understand what's going on by now. We are sorting *ratings_by_gender* by the 'F' column, which remember, stands for female. Let's print that:
 
+``` python
+print("Top rated movies by women \n", top_movies_women.head())
 ```
-print "Top rated movies by women \n", top_movies_women.head()
 
+```
 Top rated movies by women
 
 gender                                         F         M
-title                                                     
+title
 Schindler's List (1993)                 4.632911  4.406393
 Shawshank Redemption, The (1994)        4.562500  4.410959
 Usual Suspects, The (1995)              4.333333  4.399061
@@ -557,19 +569,20 @@ As you can see, most top rated movies by women also got high ratings by men. Exc
 
 We are going to add a new column to our table, which will calculate the difference between the men and women's ratings:
 
-```
+``` python
 ratings_by_gender['diff'] = ratings_by_gender['M'] - ratings_by_gender['F']
 ```
 
 Here, *diff* is a new column. This is what it will look like:
 
+``` python
+print("Difference by gender \n", ratings_by_gender.head())
 ```
-print "Difference by gender \n", ratings_by_gender.head()
-
+``` bash
 Difference by gender
 
 gender                               F         M      diff
-title                                                     
+title
 2001: A Space Odyssey (1968)  3.491228  4.103960  0.612732
 Air Force One (1997)          3.690476  3.606557 -0.083919
 Alien (1979)                  3.660714  4.123404  0.462690
@@ -585,20 +598,20 @@ gender_diff = ratings_by_gender['diff']
 
 I store just the differences in a new DataFrame.
 
-```
+``` python
 # Only get absolute values
 gender_diff = abs(gender_diff)
 ```
 
 And get the absolute values, to remove the negative sign.
 
-```
+``` python
 #Sort by size
-gender_diff.sort(ascending = False)
+gender_diff.sort_values(inplace=True, ascending = False)
 ```
 Sort it by descending size, so the biggest differences will show up on top. And finally, we graph it:
 
-```
+``` python
 # Show top 10 differences
 
 gender_diff[:10].plot(kind='barh')
@@ -611,4 +624,4 @@ The barh is a type of bar graph, except it is drawn in the horizontal direction:
 
 ## Conclusion
 
-That was a quick intro to Pandas. My advice is, search for some open data (just Google open data. Many countries, like the UK and USA, put a lot of their government data online for free) and find something you like. Pandas is quite easy to use, and there is a lot of help online. Any time you get stuck, just Google it. 
+That was a quick intro to Pandas. My advice is, search for some open data (just Google open data. Many countries, like the UK and USA, put a lot of their government data online for free) and find something you like. Pandas is quite easy to use, and there is a lot of help online. Any time you get stuck, just Google it.
