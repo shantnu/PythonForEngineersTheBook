@@ -32,19 +32,19 @@ Let's check our theory.
 
 Our first file is single.py.
 
-```
+```python
 import random
 
 def gen_random_data():
     arr = []
     for i in range(100000):
         arr.append(random.random())
-    print "job done"
+    print("job done")
 ```
 
 We have a simple function that generates random data. This is to simulate a purely  mathematical problem. We run this code 4 times:
 
-```
+```python
 if __name__ == '__main__':
     gen_random_data()
     gen_random_data()
@@ -56,14 +56,14 @@ I am running the code four times, to see what effect using threads has (as each 
 
 Now, let's open our next file, thread.py.
 
-```
+```python
 import threading
 import random
 ```
 
 We are importing the threading module this time. 
 
-```
+```python
 def gen_random_data():
     arr = []
     for i in range(100000):
@@ -73,7 +73,7 @@ def gen_random_data():
 
 We have the same function as before.
 
-```
+```python
 if __name__ == '__main__':
 
     for x in range(4):
