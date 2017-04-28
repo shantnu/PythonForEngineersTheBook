@@ -1,0 +1,495 @@
+# Raspberry Pi web server
+
+When I was looking for projects for the Raspberry Pi(Rpi), I thought of various angles to cover it from. We could treat it an embedded device, but that would require knowledge of C. We could treat it as a normal learning computer, but that would be more for children.
+
+But then I was talking to a few people new to the Rpi, and what hit me most was that they didn't realise that the Rpi is a full fledged Linux box. Everything that  a computer running Linux can do, Rpi can do, the only limitation being it has a much slower processor and limited RAM/disk.
+
+That said, since command line Linux doesn't take much resources, you can do a lot with even limited hardware.
+
+With that in mind, we'll go over how to turn your Rpi into a webserver, so that you can run commands on it from your browser, running on your laptop or iPad or anything.
+
+The webserver will be limited to your local Wifi, for security reasons. 
+
+## Prequisites
+
+You must have an Rpi setup and running, and you must be able to log into it. The default documentation on how to setup is fairly good.
+
+I found that just plugging the Rpi into your Wifi router is good enough, as the Rpi can get an IP address via DHCP. If you have a spare keyboard, you can connect it to your Rpi. For the monitor, I just use my TV, as the Rpi has an HDMI input (as do most modern TVs).
+
+You can also connect your RPI via your laptop, but I found it hard  to get internet access this way. It may work for you though, and the way to do so is:
+
+[http://pihw.wordpress.com/guides/direct-network-connection/]([http://pihw.wordpress.com/guides/direct-network-connection/)]
+
+
+**Writing code**
+
+You can write your code directly on the Rpi, if you love text based editors like vi or nano. If like me, you love your GUI, you can write your code on your PC and then copy it across. That's what I did. 
+
+Actually, you can do the entire development on your PC. If you are running Linux (or a VM), the code will work as is. Like I said earlier, the Rpi is just another Linux box.
+
+If you are running Windows, you can still run the examples, but will be need to enter Windows commands instead of Linux commands, like I do. So *dir* instead of *ls*.
+
+One thing you will need to know is the IP address of your Rpi. If you are connected with a keyboard, this is found by running *ifconfig* 
+
+```
+ifconfig
+```
+
+![](images/rpi2.jpg)
+
+Your router will usually have its own web page (Google for it, as it will depend on the manufacturer). You can also find the IP address for the Rpi from there.
+
+![](images/rpi1.jpg)
+
+**Flask**
+
+There are several ways to run a web server on the Rpi. I am going to be using the Flask web server (http://flask.pocoo.org/). Flask is a great tiny webserver that is super easy and fun to learn. If you have never used Flask before, don't worry, I'll guide you through.
+
+
+**Installation**
+
+To start off, run
+
+*pip install flask*
+
+on the Rpi and local machine, if you are developing locally.
+
+**Hello world**
+
+Open up the file *hello.py*.
+
+```
+from flask import Flask
+
+```
+
+We import Flask, and create an instance of it.
+
+**Routing in Flask**
+
+If you are new to webservers, the root path of a server is the default or main site. Eg, www.google.com is the root for the Google website. www.google.com/mail is a sub-site.
+
+The terminology of *root* is taken from Unix/Linux, where most of the early web work was done. On Linux, the root is the highest directory (equal to C:\ on Windows), and is signified by */* .
+
+If you understand that, you will understand Flask's routing better.
+
+```
+@app.route("/")
+def home():
+    return "Hello World!"
+```
+
+*@app.route()* is a Flask directive (a decorator, to be exact). It tells Flask to map the function below to the location given. So in the example above, *@app.route()* points to */*, which remember is the root path.
+
+
+The actual function is:
+
+```
+def home():
+    return "Hello World!"
+```
+
+That means if someone goes to the root of your webapp, (which could be *www.yoursite.com*, or in our case, the IP address of the Rpi), they will see "Hello World!".
+
+Before we see the code running, we have one more routing example.
+
+```
+@app.route("/<string:name>")
+```
+
+This time, I am adding an optional extra parameter. So the route will now be:
+
+```
+www.yourwebsite.com/name
+
+or
+
+192.168.0.8/name
+```
+
+The second example is how you would actually type it for the Rpi, as you will be giving the IP address.
+
+Anything within *<>* is a parameter. In this case *string:name* , we tell Flask that the value will be a string called name.
+
+```
+@app.route("/<string:name>")
+def hello_name(name):
+    hello = "Hello " +  name
+    return hello
+```
+
+So now we define a function called *hello_name()* and pass it the *name* variable. This variable will be read by Flask and passed to our function. The way it will work is:
+
+
+```
+
+192.168.0.8/YourName
+
+```
+
+Flask will take the string, *YourName* in the example above, and pass it to our function *hello_name()*.
+
+The function *hello_name()* will add *Hello* to the front of it, and display it on the browser.
+
+Finally, we need to run the code. There are two variations, depending if you are testing on your own machine or the Rpi. Comment out the other one:
+
+```
+
+# For the RPI    
+#app.run(host='0.0.0.0', port=80, debug=True)
+
+# For testing on a normal Pc
+app.run(debug=True)
+```
+
+If you developed your code on your PC, you need to copy it across to the Rpi. The easiest way to do so is using *scp*. On Windows, you need to download something like [WinScp](http://winscp.net/eng/download.php). WinScp is actually quite good as you can copy the files using a simple GUI interface.
+
+
+![](images/rpi15.jpg)
+
+On Linux,
+
+```
+scp <local file> pi@<ip address> :
+```
+
+Make note of the *:* at the end. It is **not**  optional. You can give the remote directory after that *:*
+
+```
+scp hello_world.py pi@192.168.0.8:/home/pi/rpi/
+```
+
+The above command will copy the local file *hello_world.py* to the remote directory */home/pi/rpi/*.
+
+Make sure the code has this part uncommented:
+
+```
+# For the RPI    
+app.run(host='0.0.0.0', port=80, debug=True)
+
+```
+
+You can check it using many ways on the Rpi, like using the *cat* command:
+
+```
+pi@raspberrypi ~/rpi $ cat hello.py
+
+#!/usr/bin/python
+from __future__ import print_function
+
+<< ... snipped ... >>
+
+# app.run(debug= True)
+app.run(debug= True, host = '0.0.0.0', port = 80)
+```
+
+To run the code, you need to use *sudo*:
+
+```
+pi@raspberrypi ~/rpi $   sudo ./hello.py
+
+ * Running on http://0.0.0.0:80/
+ * Restarting with reloader
+```
+
+If you get the  output above, that means the code is running on the Rpi. You can now test the webserver. On your PC (or VM), open Firefox (or any other browser), and type in the IP address of the RPI. This is the one we got earlier. For example, 192.168.0.8 in my case.
+
+First, on my PC:
+
+![](images/rpi3.jpg)
+  
+![](images/rpi4.jpg)
+
+We can even put spaces. In the image below, I enter *Mr Potato Head*:
+  
+![](images/rpi5.jpg)
+
+Now on on **iPhone**:
+
+![](images/rpi_iphone1.png)
+  
+![](images/rpi_iphone2.png)
+
+  
+Note how tiny everything is. We will address this problem later.
+
+**iPad**:
+
+![](images/rpi_ipad1.png)
+  
+![](images/rpi_ipad2.png)
+  
+On your iPhone or iPad, it will not like spaces. So if you want to go to *Mr Potato*, you will need to type *Mr%20Potato*. *%20* is the HTML code for space.
+
+You should have the above working before you proceed to the next step.
+
+## Building the webserver
+
+Create a directory called templates and add a file called index.html to it.
+
+```
+pyeng@pyeng-VirtualBox ~/PythonBook/rpi $ tree
+.
+├── hello.py
+├── templates
+│   └── index.html
+└── webserver.py
+
+1 directory, 3 files
+
+```
+
+Let's look at *index.html*.
+
+```
+<!DOCTYPE html>
+
+<form action="{{ url_for('add') }}"  method="post" class="add">
+    <p> Please enter commmand to run</p>
+    <input type="text", name="post">
+    <input class="button" type="submit" value="Run command remotely">
+    </form>
+</form>
+```
+
+This is a simple html form. If you open it in a web browser, this is what it looks like:
+
+![](images/rpi6.jpg)
+
+I won't go over the HTML part. If you have never seen a HTML form, there are many resources online. It's quite simple, and I just copy pasted this from an example. 
+
+All the form is doing is asking the user for a command to run. When you push the button, that command is sent to the Flask server.
+
+The only thing different is this part: 
+
+```
+form action="{{ url_for('add') }}"
+```
+
+*form_action* is what happens when you press submit on your form. Normally, you'd have a link to something like register, login etc. We are doing something different.
+
+**Jinja2 templating**
+
+Flask uses the Jinja2 template system. The special code you saw is a part of that. Anything in *{{}}* or *{% %}* is usually a part of the template. This part is filled in by Flask before it displays the page.
+
+Let's look at our code again:
+
+
+```
+form action="{{ url_for('add') }}"
+```
+
+*url_for()* is a function that instructs Flask to insert the url for a function we have written. At the moment, we haven't written this function yet. Let's do that now. Open *webapp.py*.
+
+```
+@app.route('/add', methods = ["POST"])
+```
+
+We are adding a route to */add*, as that's what our form will call. *methods = ["POST"]* means you can only post to this page, not read anything from it (as all this page is doing is processing the form data). 
+
+```
+def add():
+    command = request.form['post']
+```
+
+The *index.html* page we created will send us the form with the command to run. 
+
+If you remember the HTML file:
+
+```
+<input type="text", name="post">
+```
+
+We had an input box called *post*. That's what we read here. We do is read the value of that form into a variable called *command*.
+
+```
+    return redirect(url_for("home", command = command))
+```
+
+We take the command and redirect to the home page, passing in the command as a variable.
+
+Now let's look at our home page.
+
+```
+@app.route("/")
+@app.route("/<path:command>")
+```
+
+This time, we have two different routes. This is possible because both the routes will call the same function. Let's look at them one by one.
+
+```
+@app.route("/")
+```
+
+This is the same as before. It means the root (or main) path to the website.
+
+```
+@app.route("/<path:command>")
+```
+
+We are telling Flask that we can optionally have a command on the end of our webapp, like this:
+
+```
+http://192.168.0.8/whoami
+```
+
+In this case, we are passing the Linux *whoami* command to our webapp. *whoami* is for people who are suffering from an existential or spiritual crisis.
+
+The format is *path:command*, which means we are passing in a variable called command, which is a type of Linux path. The reason I'm using this instead of a simple string (which would've been good enough) is that I was trying to run complicated commands on the Rpi, like:
+
+```
+cd /; ls -l; touch foo.txt; ls -t;
+```
+
+The problem is the */* command. On Linux, it means the root file system, but as we have seen, it means something different for webapps.
+
+By signalling *command* as a *path*, I'm telling Flask that it can contain */* which should not be treated as routing.
+
+```
+def home(command = None):
+    msg = None
+```
+
+This is our home function. We set command to *None*,  for cases when the user enters no command. *msg* is also initialised to none.
+
+```
+if command:
+        p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        msg = p.communicate()[0]
+        msg = msg.split("\n")
+```
+
+If a command was found, we run it. Let's go over the rest of the code line by line:
+
+```
+p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+```
+
+*subprocess.Popen* is the function to run command line programs. The first argument is the command to run, the second says open a command line shell to run them.
+
+The third and fourth may require some explanation. On Linux systems, *stdout* is the standard output, and *stderr* is the standard error. When you do a *print*, it is printed to *stdout*. When you raise an error, it is printed to *stderr*. By default, both of these are printed to the screen, but you can change the behaviour, so that, for example, errors are printed to a file instead of the screen.
+
+```
+stdout=subprocess.PIPE, , stderr=subprocess.STDOUT
+```
+
+means that we are passing the standard output and error to our Python code.
+
+```
+msg = p.communicate()[0]
+``` 
+
+*p.communicate()* runs the command line program and returns the result. It returns both *stdout* and *stderr*. I only want *stdout*, which is why I'm doing a *[0]*.
+
+
+**WARNING** This code is very dangerous, and normally you would never run command line programs like this, as users could enter malicious commands. If you do want to do this in a commercial setting, make sure you add a password scheme.
+
+```
+return render_template("index.html", command = command, msg = msg)
+```
+
+Finally, we tell Flask to render our file *index.html*. Note that we pass in two variables: *command* and *msg*. We need to modify index.html to print these.
+
+This is what we will add to *index.html*:
+
+```
+{% if msg %}
+<b> Running command</b> <i> {{command}} <i>:
+
+{% for m in msg %}
+   {{m}}
+
+{% endfor %}
+{% endif %}
+```
+
+You may have noted that we have *{% %}*, which stand for Jinja2 templates. This means Flask will process these values before displaying them  on the screen. Let's take each part one by one:
+
+```
+{% if msg %}
+```
+
+If *msg* is not None, then enter this loop. We need to give a *{% endif %}* to show the end of the if condition.
+
+```
+<b> Running command</b> <i> {{command}} <i>:
+```
+
+We print **Running command** in bold, followed by the actual command, which is passed in as a parameter. Flask will replace *{{command}}* with the actual command.
+
+```
+{% for m in msg %}
+   {{m}}
+
+{% endfor %}
+```
+
+We might have multiple lines in the *msg* that we pass in. That is why I'm looping over it and printing each one. Again, we need a *{% endfor %}*.
+
+And that' it. Let's run a few examples:
+
+![](images/rpi7.jpg)
+
+Here I'm doing a simple *ls -l*.
+
+We can even do complicated chaining of commands like:
+
+![](images/rpi8.jpg)
+
+I run three separate commands by chaining them together.
+
+And we can even create, read and modify files. We do a *ls -l* to check which files we have:
+
+
+![](images/rpi9.jpg)
+
+We then create it on our browser:
+
+![](images/rpi10.jpg)
+
+We created a file called *shantnu.txt*. Let's check if it was created on the Rpi:
+
+![](images/rpi11.jpg)
+
+Yes, it was. Let's delete that file now:
+
+![](images/rpi12.jpg)
+
+I did a *ls -l*, and the file is there. I delete it and run *ls* again, and see the file is gone.
+And check it's gone:
+
+![](images/rpi13.jpg)
+
+Now let's try to do the same on our iPad.
+
+![](images/rpi_ipad3.png)
+  
+![](images/rpi_ipad4.png)
+
+That's not very clear, is it?
+
+The problem is that our app doesn't render very well on the small screen of the iPad and iPhone.
+
+There is one last thing I'm going to do. There is a great front end framework called Bootstrap, which allows you to create not only beautiful websites, but ones that are responsive too. Responsive means they detect that you are using a handheld device and resize themselves. So the page looks the same whether you use a iPhone or 16 inch monitor.
+
+I won't explain Bootstrap, as it's beyond the scope of this book. I'm no expert either, and all I did was find a few free themes and copy the parts I wanted. The new file is *webapp_bootstrap.py* and the only difference is it points to a *index2.html*, which is a Bootstrap file. Have a look at them.
+
+Running our code now:
+
+**PC**
+
+![](images/rpi14.jpg)
+
+**iPad**
+
+![](images/rpi_ipad5.png)
+
+Much better.
+
+**Conclusion:** Hopefully, you now understand how easy it is to turn your Rpi into a web server. But even better, I hope you have seen that anything that you can do on a normal Linux box, you can do on the Rpi. So instead of running commands, you could periodically read data from a sensor, like a temperature sensor, store it on a database, and then display it via the web server.
+
+Or if you have a robotics project (or any other project where the Rpi is connected to an external device), you could control it using your web browser.
+
+Many people I know are using the Rpi as a cheap Linux server. In many companies, buying a full server can takes months (because of processes and rules). But a Rpi can be bought over a weekend. If you don't care about real time performance (like reading data from a sensor, as I mentioned above), then the Rpi is much better than a full server, as not only is it cheaper, it is easy to move around and install as well.
+
+So start treating the Rpi as a full fledged Linux box rather than a toy, and you will really start to see its benefits.
