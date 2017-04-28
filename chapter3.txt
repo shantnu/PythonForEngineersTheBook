@@ -78,7 +78,7 @@ The *range()* function generates a list of numbers from 0 to *num_samples*. So w
 
 This says that for each *x* that we generated, run it through the formula for the sine wave,  
 
-````
+```
 2 * pi * f * t.
 ```
 
