@@ -4,7 +4,7 @@ If you have been to Amazon, you must have seen the "also bought" section, which 
 
 Amazon is a special case of this, as it hires hundreds of engineers whose job is to tweak this algorithm. And it works great for things like books. I have bought many great books based on Amazon's recommendation. It works for movies as well. Where is fails is for items that are not usually rated/reviewed, at least as much as books/movies. Things like household products. I recently bought a drain cleaner, and was immediately bombarded with toilet cleaning products, even though the cleaner had been a one time buy.
 
-That said, their algorithm works well in the general case, and is the main reason Amazon has become such a powerhouse. Amazon always recommends the items it thinks you will like. If you think that is a big deal, try going to Amazon's rivals for books, like B&N, Apple or Kobo. They always have the same 4-5 books they always recommend, a list that is updated once a month, and usually represents books by big publishers who have paid top dollar to be featured. 
+That said, their algorithm works well in the general case, and is the main reason Amazon has become such a powerhouse. Amazon always recommends the items it thinks you will like. If you think that is a big deal, try going to Amazon's rivals for books, like B&N, Apple or Kobo. They always have the same 4-5 books they always recommend, a list that is updated once a month, and usually represents books by big publishers who have paid top dollar to be featured.
 
 Like I said, Amazon's algorithm is highly tweaked (and secret), and is based on years of experience. While we can't replicate what they did, we can understand the theory of how the algorithm works.
 
@@ -64,19 +64,19 @@ I have generated some random data for a few movie ratings. Let's have a look at 
   'Jack': 1.5,
   'Lisa': 3.0,
   'Sally': 2.0},
-  
+
  'Terminator 2': {'Tom': 5.0,
   'Jack' : 1.0,
   'Lisa': 3.5,
   'Sally': 2.0},
-  
+
  'It happened one night': {'Tom': 3.5,
   'Jack': 3.5,
   'Tiger': 4.0,
   'Lisa': 5.0,
   'Michele': 3.0,
   'Sally': 4.0,},
-  
+
  '27 Dresses': {'Tom': 3.0,
   'Jack': 3.5,
   'Tiger': 3.0,
@@ -98,7 +98,7 @@ I have generated some random data for a few movie ratings. Let's have a look at 
   'Lisa': 3.5,
   'Sally': 2.0,
   }}
-  
+
 ```
 
 The movie data is stored as a dictionary. Each dictionary has its own sub-dictionary. Let's have a look at the first movie:
@@ -113,13 +113,13 @@ The movie data is stored as a dictionary. Each dictionary has its own sub-dictio
 
 The movie Terminator has been rated by four people: Tom has given it a score of 4.0, while Jack has given it 1.5, and so on. These numbers are random (ie, I just made them up).
 
-You will notice that not all people have rated all the movies. This is something we will need to take into account when we are calculating the coorelation. 
+You will notice that not all people have rated all the movies. This is something we will need to take into account when we are calculating the coorelation.
 
 Let's open up the file *calc_correlation.py*  Ignore the function for now, let's see the main code:
 
 ```
 if len(sys.argv) < 2:
-    print "Usage: python calc_correlation.py <data file.py>"
+    print("Usage: python calc_correlation.py <data file.py>")
     exit(1)
 ```
 
@@ -129,9 +129,9 @@ We want to give the script a data file to calculate the correlation on, in this 
 with open(sys.argv[1], 'r') as f:
     temp = f.read()
     movies_list = ast.literal_eval(temp)
-    print movies_list
+    print(movies_list)
 
-```	
+```
 
 If you have never used the *with* function in Python, it's a cool fairly new feature. Normally, when you open a file, you have to close it, deal with any errors etc. *with* does all that for you. It will open the file, close it at the end, and handle any errors that may arise.
 
@@ -171,10 +171,10 @@ for movie in movies_list:
 ```
 def find_correlation(movie_list, movie_for_correlation):
     '''
-    Input: 
+    Input:
     movie_list - List of movies
     movie_for_correlation: The movie to calculate the correlation for
-    
+
     Return:
     Dictionary of correlation for movie_for_correlation
     '''
@@ -200,7 +200,7 @@ if movie != movie_for_correlation:
 
 When doing the calculations, we don't want to compare a movie to itself (as that would always show perfect correlation). So we check for that, and then declare a few empty arrays.
 
-Remember our data file?                
+Remember our data file?
 
 ```
 {'Terminator': {'Tom': 4.0,
@@ -214,11 +214,11 @@ See that we have the movie, and then the people who reviewed it? Now, we loop ov
 ```
 # Loop through the people who reviewed the movie
 for reviewer_name in movie_list[movie_for_correlation]:
-    
+
     # Check that the reviewer has reviewed the current movie.
     # If so, calculate the correlation coefficient.
     # If they haven't reviewed the movie, then it makes no sense doing a correlation.
-    
+
     if reviewer_name in movie_list[movie]:
 ```
 
@@ -228,8 +228,8 @@ One check we do (in the last line above) is to check that *this* reviewer (the o
 if reviewer_name in movie_list[movie]:
         movie_for_correlation_list.append(movie_list[movie_for_correlation][reviewer_name])
         movie_to_compare_list.append(movie_list[movie][reviewer_name])
-            
-```            
+
+```
 
 We are still in the for loop. If the reviewer reviewed the movie, we save their score for the current movie, as well as their score for the movie under consideration.
 
@@ -238,11 +238,11 @@ To make it clear, let's look at the whole for loop:
 ```
 # Loop through the people who reviewed the movie
 for reviewer_name in movie_list[movie_for_correlation]:
-    
+
     # Check that the reviewer has reviewed the current movie.
     # If so, calculate the correlation coefficient.
     # If they haven't reviewed the movie, then it makes no sense doing a correlation.
-    
+
     if reviewer_name in movie_list[movie]:
         movie_for_correlation_list.append(movie_list[movie_for_correlation][reviewer_name])
         movie_to_compare_list.append(movie_list[movie][reviewer_name])
@@ -255,7 +255,7 @@ This for loop will loop over the reviewers, and if they reviewed both the movies
 correlate_dict[movie] = np.corrcoef(movie_for_correlation_list,movie_to_compare_list)[1][0]
 
 return correlate_dict
-```    
+```
 
 Finally, we calculate the correlation using the *np.corrcoef()* function we saw earlier. The function creates a dictionary with correlation scores for the current movie. For example, if the movie is *Terminator*, the dictionary would store what correlation score *Terminator* has to *Poirot*, to *Sherlock Holmes* etc.
 
@@ -268,13 +268,13 @@ Back in the main loop:
 ```
 for movie in movies_list:
     correlated_dict[movie] =  find_correlation(movies_list, movie)
-print correlated_dict    
+print(correlated_dict)
 ```
 
 As I said, we are creating a correlation dictionary for each movie. The goal is to create a correlation index we can use later to make recommendations.
 
 ```
-json.dump(correlated_dict, open("corr_dict.py",'w')) 
+json.dump(correlated_dict, open("corr_dict.py",'w'))
 ```
 
 Remember I said I'd show you another way to write Python dictionaries to file? This is the easier way, using the json module. It opens the file and dumps our dictionary in one go. Let's open our file *corr_dict.py* and look at it. I've cleaned it a bit.
@@ -295,7 +295,7 @@ Say you have two movies, A and B. You have given a rating of 4.0 to A.
 
 The correlation between A and B is 1.0. Since 1.0 is the highest value, that means the movies are perfectly correlated, and the person who likes one will like the other.
 
-So your estimated score for B will be: 
+So your estimated score for B will be:
 
 *4.0 x 1.0 = 4.0*
 
@@ -314,15 +314,15 @@ Before we start on that, I've cleaned up corr_dict.py for humans (as it's origin
 
 ```
 {
-"27 Dresses": {"Poirot": -0.30434782608695654, "Terminator 2": -0.13998740998253317, "It happened one night": 0.5791405068790082, "Sherlock Holmes": -0.27583864218368526, "Terminator": -0.16796775328675631}, 
+"27 Dresses": {"Poirot": -0.30434782608695654, "Terminator 2": -0.13998740998253317, "It happened one night": 0.5791405068790082, "Sherlock Holmes": -0.27583864218368526, "Terminator": -0.16796775328675631},
 
-"It happened one night": {"Terminator 2": 0.25275763912268084, "27 Dresses": 0.5791405068790082, "Terminator": 0.42437890059987993, "Sherlock Holmes": 0.0, "Poirot": 0.2895702534395041}, 
+"It happened one night": {"Terminator 2": 0.25275763912268084, "27 Dresses": 0.5791405068790082, "Terminator": 0.42437890059987993, "Sherlock Holmes": 0.0, "Poirot": 0.2895702534395041},
 
-"Terminator 2": {"Poirot": 0.87845527687491742, "27 Dresses": -0.13998740998253317, "It happened one night": 0.25275763912268084, "Sherlock Holmes": 0.73889576951817515, "Terminator": 0.92184471452179317}, 
+"Terminator 2": {"Poirot": 0.87845527687491742, "27 Dresses": -0.13998740998253317, "It happened one night": 0.25275763912268084, "Sherlock Holmes": 0.73889576951817515, "Terminator": 0.92184471452179317},
 
-"Terminator": {"Terminator 2": 0.92184471452179317, "27 Dresses": -0.16796775328675631, "It happened one night": 0.42437890059987993, "Sherlock Holmes": 0.77020798423740755, "Poirot": 0.72664794872022465}, 
+"Terminator": {"Terminator 2": 0.92184471452179317, "27 Dresses": -0.16796775328675631, "It happened one night": 0.42437890059987993, "Sherlock Holmes": 0.77020798423740755, "Poirot": 0.72664794872022465},
 
-"Poirot": {"Terminator 2": 0.87845527687491742, "27 Dresses": -0.30434782608695654, "It happened one night": 0.2895702534395041, "Sherlock Holmes": 0.6698938453032357, "Terminator": 0.72664794872022465}, 
+"Poirot": {"Terminator 2": 0.87845527687491742, "27 Dresses": -0.30434782608695654, "It happened one night": 0.2895702534395041, "Sherlock Holmes": 0.6698938453032357, "Terminator": 0.72664794872022465},
 
 "Sherlock Holmes": {"Poirot": 0.6698938453032357, "Terminator 2": 0.73889576951817515, "27 Dresses": -0.27583864218368526, "It happened one night": 0.0, "Terminator": 0.77020798423740755}
 
@@ -378,14 +378,14 @@ my_movies = {'Terminator': 5.0,
 After importing the modules we need, we declare a dictionary called *my_movies*, which contains a few movies that I have rated. This will be used to drive our recommendation engine.
 
 ```
-# Read the data from the correlation dictionary we calculated earlier      
+# Read the data from the correlation dictionary we calculated earlier
 correlated_dict = json.load(open("corr_dict.py"))
 
-# A dictionary to store the total of my calculated votes      
+# A dictionary to store the total of my calculated votes
 total_my_votes = {}
 
 # A running total  to store intermediate results.
-running_total = 0 
+running_total = 0
 ```
 
 We open the dictionary we created, *corr_dict.py*, and declare some variables.  We are using the *json* library we used last time.
@@ -400,24 +400,24 @@ We loop over the movies we rated.
 ```
 # Loop over the dictionary of correlation coefficients
 for movie_to_compare in correlated_dict[movie_key]:
-    running_total = 0 
+    running_total = 0
 ```
 
 For the current movie we are looping over, we look at the correlation coffecients. To remind you what that means, for our first movie *Terminator*, these are the coeffecients:
 
 ```
-"Terminator": 
+"Terminator":
 {
-"Terminator 2": 0.92184471452179317, 
-"27 Dresses": -0.16796775328675631, 
-"It happened one night": 0.42437890059987993, 
+"Terminator 2": 0.92184471452179317,
+"27 Dresses": -0.16796775328675631,
+"It happened one night": 0.42437890059987993,
 "Sherlock Holmes": 0.77020798423740755,
 "Poirot": 0.72664794872022465
  }
- 
-```        
 
-The above shows that Terminator has a 0.92 correlation with Terminator 2. Since 1.0 is the max value, this shows a very strong correlation.    
+```
+
+The above shows that Terminator has a 0.92 correlation with Terminator 2. Since 1.0 is the max value, this shows a very strong correlation.
 
 In the next line, we loop over all the movies we have a correlation for. Obviously, this will include movies we have already rated. So our next step is to get rid of them, as we only want the correlation for movies we have not seen or rated.
 
@@ -432,10 +432,10 @@ Next line:
 if movie_to_compare not in total_my_votes:
     # Line below creates a new dictionary element for total_my_votes and gives it a value.
     total_my_votes.setdefault(movie_to_compare, (correlated_dict[movie_key][movie_to_compare] * my_movies[movie_key]) )
-    
+
 else:
     # If this is not the first time, merely update the values we have created before
-    total_my_votes[movie_to_compare] += correlated_dict[movie_key][movie_to_compare] * my_movies[movie_key]      
+    total_my_votes[movie_to_compare] += correlated_dict[movie_key][movie_to_compare] * my_movies[movie_key]
 ```
 
 What I am doing is calculating the correlation for all the movies. The first time we enter the loop, this code is called:
@@ -453,7 +453,7 @@ The second time we enter the loop, we update the dictionary value:
 ```
 else:
     # If this is not the first time, merely update the values we have created before
-    total_my_votes[movie_to_compare] += correlated_dict[movie_key][movie_to_compare] * my_movies[movie_key]   
+    total_my_votes[movie_to_compare] += correlated_dict[movie_key][movie_to_compare] * my_movies[movie_key]
 ```
 
 As you can see, I am keeping the total. As I explained in the example above, I keep the total, and later average it. We do it like this:
@@ -469,11 +469,11 @@ Finally, we run our code to see which movies would be recommened. I'm using > 3.
 ```
 for movie_key in recommended_movies:
     if recommended_movies[movie_key] > 3.0:
-        print "Strongly recommended for you: ", movie_key
+        print ("Strongly recommended for you: ", movie_key)
     elif recommended_movies[movie_key] > 0.0:
-        print "Recommended for you: ", movie_key    
+        print("Recommended for you: ", movie_key)
     else :
-        print "Not recommended: ", movie_key
+        print("Not recommended: ", movie_key)
 ```
 
 Running the code:
@@ -487,8 +487,8 @@ total_my_votes =  {u'Terminator 2': 11.517855396618794, u'27 Dresses': -3.312758
 
 Strongly recommended for you:  Terminator 2
 Not recommended:  27 Dresses
-Recommended for you:  It happened one night        
-    
+Recommended for you:  It happened one night
+
 ```
 
 We are getting the same results for Terminator 2 and 27 dresses as we calculated by hand.
@@ -500,5 +500,3 @@ You will have seen that the I kept the code to calculate the correlation coeffie
 You would then have to run *calc_correlation.py* regularly with the updated data. This would typically be done at night, when the servers were not loaded. If you are someone like Amazon, you'd have millions and millions of entries in your dataset, and this could take a fair bit of time. Of course, then you'd be using optimised database technologies to handle this large amount of data.
 
 And, that's it. Hopefully, you know a bit about machine learning now. If you want some challenge, or want to improve your machine learning skills, the next step is to take some real life data, like the MoviesLens database, and build a recommendation engine based on that. 
-
-                    
