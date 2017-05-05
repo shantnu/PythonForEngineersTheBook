@@ -356,7 +356,7 @@ This is our home function. We set command to *None*,  for cases when the user en
 if command:
         p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         msg = p.communicate()[0]
-        msg = msg.split("\n")
+        msg = msg.decode().split("\n")
 ```
 
 If a command was found, we run it. Let's go over the rest of the code line by line:
