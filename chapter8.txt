@@ -50,7 +50,7 @@ There are several ways to run a web server on the Rpi. I am going to be using th
 
 To start off, run
 
-*pip install flask*
+*pip3 install flask*
 
 on the Rpi and local machine, if you are developing locally.
 
