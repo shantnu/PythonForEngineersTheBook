@@ -281,7 +281,7 @@ def foo(<input>):
     return <value>
 ```
 
-*def* defines a function. Notice the colon (:) and the white space: Like loops and *if* conditions, you need to use indentation for code under the for loop.
+*def* defines a function. Notice the colon (:) and the white space? Like loops and *if* conditions, you need to use indentation for code under the for loop.
 
 Our first function counts the number of words:
 
