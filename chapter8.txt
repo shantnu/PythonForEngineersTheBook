@@ -10,7 +10,7 @@ With that in mind, we'll go over how to turn your Rpi into a webserver, so that 
 
 The webserver will be limited to your local Wifi, for security reasons. 
 
-## Prequisites
+## Prerequisites
 
 You must have an Rpi setup and running, and you must be able to log into it. The default documentation on how to setup is fairly good.
 
@@ -470,7 +470,7 @@ That's not very clear, is it?
 
 The problem is that our app doesn't render very well on the small screen of the iPad and iPhone.
 
-There is one last thing I'm going to do. There is a great front end framework called Bootstrap, which allows you to create not only beautiful websites, but ones that are responsive too. Responsive means they detect that you are using a handheld device and resize themselves. So the page looks the same whether you use a iPhone or 16 inch monitor.
+There is one last thing I'm going to do. There is a great front end framework called Bootstrap, which allows you to create not only beautiful websites, but ones that are responsive too. Responsive means they detect that you are using a handheld device and resize themselves. So the page looks the same whether you use an iPhone or 16 inch monitor.
 
 I won't explain Bootstrap, as it's beyond the scope of this book. I'm no expert either, and all I did was find a few free themes and copy the parts I wanted. The new file is *webapp_bootstrap.py* and the only difference is it points to a *index2.html*, which is a Bootstrap file. Have a look at them.
 
