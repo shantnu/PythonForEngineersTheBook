@@ -78,7 +78,7 @@ The *range()* function generates a list of numbers from 0 to *num_samples*. So w
 
 This says that for each *x* that we generated, run it through the formula for the sine wave,  
 
-````
+```
 2 * pi * f * t.
 ```
 
@@ -518,5 +518,14 @@ plt.show()
 ```
 
 ![](images/noisy4.png)
+
+Note that we will receive a warning:
+
+```
+ComplexWarning: Casting complex values to real discards the imaginary part
+  return array(a, dtype, copy=False, order=order)
+```
+
+This is, again, because the *fft* returns an array of complex numbers. Luckily, like the warning says, the imaginary part will be discarded.
 
 And there you go. Using our very simplistic filter, we have cleaned a sine wave. And this brings us to the end of this chapter.

@@ -16,51 +16,12 @@ With that in mind, let’s start. The file we are working with is read_file.py, 
 
 ```
 #!/usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
 ```
 
 The first line that starts with a *#!* is used mainly on Linux systems. It tells the shell that this is a Python file, and should be run as such. It also tells Linux which interpreter to use (Python in our case). It doesn’t do any harm on Windows (as anything that starts with a *#* is a comment in Python), so we keep it in.
 
-The next three lines require a bit of an explanation. I am building the course with Python 2.7, which is currently(2014) the most popular version, even though the 2.x line has been officially discontinued. But the fact is, most people are still using 2.x. How many? Something like 90%. Which means if you go for a job, chances are you will use Python 2.x.
 
-However, 3.x is the officially supported version. I will get around this feature by writing my code in a way that makes it future proof.
-
-The difference between 2 and 3 is beyond the scope of this book, however, let’s have a quick look:
-
-```
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-```
-
-One of the things Python 3 introduced was that *print* was turned into a function, while earlier it was a keyword. We will be using the newer print function, so that’s what I import  first.
-
-The second thing I import is division. Python 2's division was broken. For example,
-
-```
-3/2
-Out[1]: 1
-
-3.0/2.0
-Out[2]: 1.5
-
-```
-
-Dividing 3 by 2 gives 1, not 1.5. If I want the correct answer, I need to convert the numbers to floating point. Now, here is the same example in Python 3 (or future proof Python 2):
-
-```
-from __future__ import division
-
-3/2
-Out[4]: 1.5
-
-```
-
-Now I get the correct answer.
-
-The third thing I import is *absolute_import*. Explaining that is a bit complicated, so I won't go into that for just the moment. Let's start looking at the code.
+Let's start looking at the code.
 
 ```
 f = open("birds.txt", "r")
@@ -117,9 +78,6 @@ Okay, so we can read a file and print it on the screen. Now, to count the number
 
 ```
 #! /usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
 
 f = open("birds.txt", "r")
 data = f.read()
@@ -205,9 +163,6 @@ Now open the file *birds.txt* and count the number of lines by hand. You’ll fi
 
 ```
 #! /usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
 
 f = open("birds.txt", "r")
 data = f.read()
@@ -313,9 +268,6 @@ Now we need to tie it all together. *word_count.py* is our final file.
 
 ```
 #! /usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
 import sys
 ```
 
@@ -329,7 +281,7 @@ def foo(<input>):
     return <value>
 ```
 
-*def* defines a function. Notice the colon (:) and the white space: Like loops and *if* conditions, you need to use indentation for code under the for loop.
+*def* defines a function. Notice the colon (:) and the white space? Like loops and *if* conditions, you need to use indentation for code under the for loop.
 
 Our first function counts the number of words:
 

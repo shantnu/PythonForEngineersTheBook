@@ -8,10 +8,6 @@ Move to the *Plotting* folder and open up *list_comp.py*.
 
 ```
 #! /usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-
 import numpy as np
 ```
 
@@ -121,16 +117,12 @@ A few final words. I’m not trying to say numpy arrays are better than list com
 
 Okay. Let’s plot some sine and cosine ways. You all remember the formula's from school right? No? Then get out of my class.
 
-Just kidding. You don’t need to remember formula's. That’s what Python is for, right?
+Just kidding. You don’t need to remember formulas. That’s what Python is for, right?
 
 In this example, we are going to plot a few simple sin  and cos graphs, getting an introduction to Python’s plotting library, Matplotlib.
 
 ```
 #! /usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-
 import numpy as np
 import matplotlib.pyplot as plt
 ```
@@ -142,11 +134,11 @@ The new thing is: *import matplotlib.pyplot as plt*. We are importing it as *plt
 x = np.linspace(0, 20, 1000)
 ```
 
-Okay, let me remind you what I said earlier. Learning to use Python well means using a lot of libraries and functions. But you don’t have to remember them all. I still forget simple things like how to read files. Learning how to Google is one of the most important part of being a software engineer.
+Okay, let me remind you what I said earlier. Learning to use Python well means using a lot of libraries and functions. But you don’t have to remember them all. I still forget simple things like how to read files. Learning how to Google is one of the most important parts of being a software engineer.
 
 With that in mind, I’m using the numpy *linspace* function. And yes, I misspell it as *linespace* every single time.
 
-Anyway, *linspace* generates evenly spread out values. In the example above, it will generate 1000 values between 0 and 20. Printing a 1000 values will take a lot of space here, so let’s see what happens when we generate only 10 values:
+Anyway, *linspace* generates evenly spread out values. In the example above, it will generate 1000 values between 0 and 20. Printing 1000 values will take a lot of space here, so let’s see what happens when we generate only 10 values:
 
 ```
 In [2]: np.linspace(0,20,10)
@@ -217,10 +209,6 @@ I’m using two different files to show different ways of reading data.
 
 ```
 #! /usr/bin/python
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-
 import numpy as np
 import matplotlib.pyplot as plt
 ```
@@ -231,7 +219,7 @@ Nothing new here. Let’s go ahead.
 salary = np.fromfile("salaries.txt", dtype=int, sep=",")
 ```
 
-One of the main power of numpy arrays, that makes them so much better than normal Python lists, is that it allows different types of number data types.  Python lists are normally used for strings. While they can store numbers, they aren’t really optimised for numerical processing.
+One of the main powers of numpy arrays, that makes them so much better than normal Python lists, is that it allows different types of number data types.  Python lists are normally used for strings. While they can store numbers, they aren’t really optimised for numerical processing.
 
 Numpy arrays are. You can store data as 8, 16 or 32 bits. You can choose to use integers or floats. Numpy handles all the conversion and processing internally.
 
