@@ -1,6 +1,6 @@
 # Python Pandas
 
-You must have seen in Chapter on plotting that Python can be used to parse csv files. You might also have noted that it is fairly painful. While there are libraries like *csv_reader()*, they still aren't perfect. You still have to do  a lot of stuff manually.
+You must have seen in Chapter on plotting that Python can be used to parse csv files. You might also have noted that it is fairly painful. While there are libraries like *csv_reader()*, they still aren't perfect. You still have to do a lot of stuff manually.
 
 Enter Pandas, which is a great library for data analysis. It is quite high level, so you don't have to muck about with low level details, unless you really want to.
 
@@ -143,7 +143,7 @@ We can see that while obesity for men has gone up, obesity for women has gone up
 
 ![](images/pandas3.jpg)
 
-We will read the  data slightly differently this time. Last time, we defined the headers ourself. This time, we'll let pandas pick them up.
+We will read the data slightly differently this time. Last time, we defined the headers ourself. This time, we'll let pandas pick them up.
 
 ``` python
 # Read 2nd section, by age
@@ -207,7 +207,7 @@ data_age_minus_total = data_age.drop('Total', axis = 1)
 
 ```
 
-The *drop()* function can drop entries from an table. Here, we are dropping the *Total* column.
+The *drop()* function can drop entries from a table. Here, we are dropping the *Total* column.
 
 ``` python
 data_age_minus_total.plot()
@@ -404,7 +404,7 @@ Star Trek: First Contact (1996)     365
 dtype: int64
 ```
 
-The second number is the number of votes. So Star Wars has 583 votes, making it the higest rated movie.
+The second number is the number of votes. So Star Wars has 583 votes, making it the highest rated movie.
 
 To no one's surprise, all the Star War movies are there (only the real ones, none of that Jar Jar Binks garbage). Scream and Liar Liar were a bit surprising, as they aren't really classics.  But as we'll see later, some people may consider them classics.
 

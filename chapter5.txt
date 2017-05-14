@@ -183,7 +183,7 @@ python edge_detect.py ship.jpg
 
 The leftmost is the original image. The middle is the one with low thresholds. You can see it detected a lot of edges. Look inside the ship. The algorithm detected the windows of the ship, as well as a small hatch near the front. But it also detected a lot of unnecessary details in the sea. The rightmost image has the high thresholds. It didn't detect the unneeded info in the sea, but it also failed to detect the windows in the ship.
 
-So how will you choose the thesholds? One thing I will say repeatedly in this chapter- there are no fixed answers. Try different values till you find ones you like. This is because the values will depend on your application and the type of images you are working with.
+So how will you choose the thresholds? One thing I will say repeatedly in this chapter- there are no fixed answers. Try different values till you find ones you like. This is because the values will depend on your application and the type of images you are working with.
 
 Before I close this section, a bit of info about the image. I took the photo in Southampton when on a river cruise. The ship is at the exact place where the Titanic sailed from. That parking spot costs £1000 a day (around $1500). Still cheap for a £30 million ship.
 
@@ -220,11 +220,11 @@ Now, we are going to find the contours (which is just a fancy word for edges) in
 im, contours, hierarchy= cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 ```
 
-The *findContours()* finds the contours in the given image. The first option is the output of the canny edge detector. *RETR_EXTERNAL* tells OpenCv to only find the outermost edges (as you can find countours within countours). The second arguments tells OpenCv to use the simple approximation.
+The *findContours()* finds the contours in the given image. The first option is the output of the canny edge detector. *RETR_EXTERNAL* tells OpenCv to only find the outermost edges (as you can find contours within contours). The second arguments tells OpenCv to use the simple approximation.
 
-The function returns three values: The image, a list of contours found, and the hierarchy (which we'll ignore. It is used if you have many countours embedded within others).
+The function returns three values: The image, a list of contours found, and the hierarchy (which we'll ignore. It is used if you have many contours embedded within others).
 
-The *contours* return value is a simple list that contains the number of countours found. Taking the length of it will give us number of objects found.
+The *contours* return value is a simple list that contains the number of contours found. Taking the length of it will give us number of objects found.
 
 ```
 print("Number of objects found = ", len(contours))
@@ -236,7 +236,7 @@ cv2.imshow("objects Found", objects)
 cv2.waitKey(0)
 ```
 
-Finally, we use the *drawContours()* function. The first argument is the image we want to draw on. The second is the countours we found in the last function. The 3rd is -1, to say that we want all contours to be drawn (we can choose to only draw certain contours). The fourth is the color, green in this case, and the last is the thickness.
+Finally, we use the *drawContours()* function. The first argument is the image we want to draw on. The second is the contours we found in the last function. The 3rd is -1, to say that we want all contours to be drawn (we can choose to only draw certain contours). The fourth is the color, green in this case, and the last is the thickness.
 
 Finally, we show the image.
 
@@ -835,7 +835,7 @@ I pass in the blobs we found, and inititalise the colours to zero.
 
 ```
 
-I loop over each blob found, and call the function *meanColor()* on it. Remember, this returns the red blue green valus as a list. I update my local color variables with this.
+I loop over each blob found, and call the function *meanColor()* on it. Remember, this returns the red blue green values as a list. I update my local color variables with this.
 
 ```
     red = red / len(blobs)
@@ -895,7 +895,7 @@ import sys
 shirt_location = (240,378,120,120)
 def find_rgb(blobs):
     '''
-    Find the RGB values in blobs of data. The fucntion loops over the blobs
+    Find the RGB values in blobs of data. The function loops over the blobs
     and finds the average of the rgb values
     Input: The output of the findBlobs() function
     Output: The average rgb values are returned.

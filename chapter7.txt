@@ -113,7 +113,7 @@ The movie data is stored as a dictionary. Each dictionary has its own sub-dictio
 
 The movie Terminator has been rated by four people: Tom has given it a score of 4.0, while Jack has given it 1.5, and so on. These numbers are random (ie, I just made them up).
 
-You will notice that not all people have rated all the movies. This is something we will need to take into account when we are calculating the coorelation.
+You will notice that not all people have rated all the movies. This is something we will need to take into account when we are calculating the correlation.
 
 Let's open up the file *calc_correlation.py*  Ignore the function for now, let's see the main code:
 
@@ -403,7 +403,7 @@ for movie_to_compare in correlated_dict[movie_key]:
     running_total = 0
 ```
 
-For the current movie we are looping over, we look at the correlation coffecients. To remind you what that means, for our first movie *Terminator*, these are the coeffecients:
+For the current movie we are looping over, we look at the correlation coefficients. To remind you what that means, for our first movie *Terminator*, these are the coefficients:
 
 ```
 "Terminator":
@@ -464,7 +464,7 @@ for movie_key in total_my_votes.keys():
     recommended_movies[movie_key] =  total_my_votes[movie_key] / len(total_my_votes.keys())
 ```
 
-Finally, we run our code to see which movies would be recommened. I'm using > 3.0 as strong recommendation, >0.0 as normal recommendation, 0 or less as not recommended.
+Finally, we run our code to see which movies would be recommended. I'm using > 3.0 as strong recommendation, >0.0 as normal recommendation, 0 or less as not recommended.
 
 ```
 for movie_key in recommended_movies:
@@ -495,7 +495,7 @@ We are getting the same results for Terminator 2 and 27 dresses as we calculated
 
 ## In real life
 
-You will have seen that the I kept the code to calculate the correlation coeffients separate from the main code. That's because these would change every day and every hour, based on what users were buying.
+You will have seen that the I kept the code to calculate the correlation coefficients separate from the main code. That's because these would change every day and every hour, based on what users were buying.
 
 You would then have to run *calc_correlation.py* regularly with the updated data. This would typically be done at night, when the servers were not loaded. If you are someone like Amazon, you'd have millions and millions of entries in your dataset, and this could take a fair bit of time. Of course, then you'd be using optimised database technologies to handle this large amount of data.
 
