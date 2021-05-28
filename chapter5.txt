@@ -185,7 +185,7 @@ The leftmost is the original image. The middle is the one with low thresholds. Y
 
 So how will you choose the thresholds? One thing I will say repeatedly in this chapter- there are no fixed answers. Try different values till you find ones you like. This is because the values will depend on your application and the type of images you are working with.
 
-Before I close this section, a bit of info about the image. I took the photo in Southampton when on a river cruise. The ship is at the exact place where the Titanic sailed from. That parking spot costs £1000 a day (around $1500). Still cheap for a £30 million ship.
+Before I close this section, a bit of info about the image. I took the photo in Southampton when on a river cruise. The ship is at the exact place where the Titanic sailed from. That parking spot costs Â£1000 a day (around $1500). Still cheap for a Â£30 million ship.
 
 ## Count objects
 
@@ -217,12 +217,12 @@ This code is the same as before. We have detected the edges in the image and the
 Now, we are going to find the contours (which is just a fancy word for edges) in the image. If you are wondering why we ned to do that, since we can clearly see the edges in the image above, it's because the code isn't aware of it. The code below finds the edges programatically:
 
 ```
-im, contours, hierarchy= cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+contours, hierarchy= cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 ```
 
 The *findContours()* finds the contours in the given image. The first option is the output of the canny edge detector. *RETR_EXTERNAL* tells OpenCv to only find the outermost edges (as you can find contours within contours). The second arguments tells OpenCv to use the simple approximation.
 
-The function returns three values: The image, a list of contours found, and the hierarchy (which we'll ignore. It is used if you have many contours embedded within others).
+The function returns two values: A list of contours found, and the hierarchy (which we'll ignore. It is used if you have many contours embedded within others).
 
 The *contours* return value is a simple list that contains the number of contours found. Taking the length of it will give us number of objects found.
 
@@ -253,21 +253,21 @@ Also, make sure you have a plain background. If you have fancy tiles or somethin
 
 **Face detection with OpenCV**
 
-OpenCV uses machine learning algorithms to search for faces within a picture. For something as complicated as a face, there isn’t one simple test that will tell you if it found a face or not. Instead, there are thousands of small patterns/features that must be matched. The algorithms break the task of identifying the face into thousands of smaller, bite-sized tasks, each of which is easy to solve. These tasks are also called classifiers.
+OpenCV uses machine learning algorithms to search for faces within a picture. For something as complicated as a face, there isnÂ’t one simple test that will tell you if it found a face or not. Instead, there are thousands of small patterns/features that must be matched. The algorithms break the task of identifying the face into thousands of smaller, bite-sized tasks, each of which is easy to solve. These tasks are also called classifiers.
 
-For something like a face, you might have 6,000 or more classifiers, all of which must match for a face to be detected (within error limits, of course). But therein lies the problem: For face detection, the algorithm starts at the top left of a picture and moves down across small blocks of data, looking at each block, constantly asking, “Is this a face? … Is this a face? … Is this a face?” Since there are 6,000 or more tests per block, you might have millions of calculations to do, which will grind your computer to a halt.
+For something like a face, you might have 6,000 or more classifiers, all of which must match for a face to be detected (within error limits, of course). But therein lies the problem: For face detection, the algorithm starts at the top left of a picture and moves down across small blocks of data, looking at each block, constantly asking, Â“Is this a face? Â… Is this a face? Â… Is this a face?Â” Since there are 6,000 or more tests per block, you might have millions of calculations to do, which will grind your computer to a halt.
 
 ![](images/face1.jpg)
 
 The image above is a rough example of how face detection works. The algorithm breaks the image into small blocks of pixels, and does the face detection on each.
 
-To get around this, OpenCV uses cascades. What’s a cascade? The best answer can be found from the dictionary: A waterfall or series of waterfalls
+To get around this, OpenCV uses cascades. WhatÂ’s a cascade? The best answer can be found from the dictionary: A waterfall or series of waterfalls
 
 Like a series of waterfalls, the OpenCV cascade breaks the problem of detecting faces into multiple stages. For each block, it does a very rough and quick test. If that passes, it does a slightly more detailed test, and so on.
 
 ![](images/face2.jpg)
 
-The algorithm may have 30-50 of these stages or cascades, and it will only detect a face if all stages pass. The advantage is that the majority of the pictures will return negative during the first few stages, which means the algorithm won’t waste time testing all 6,000 features on it. Instead of taking hours, face detection can now be done in real time.
+The algorithm may have 30-50 of these stages or cascades, and it will only detect a face if all stages pass. The advantage is that the majority of the pictures will return negative during the first few stages, which means the algorithm wonÂ’t waste time testing all 6,000 features on it. Instead of taking hours, face detection can now be done in real time.
 
 **Cascades in practice**
 
@@ -277,7 +277,7 @@ Since face detection is such a common case, OpenCV comes with a number of built-
 
 ## Understanding the code
 
-Let’s break down the actual code, face_detect.py.
+LetÂ’s break down the actual code, face_detect.py.
 
 ```
 # Get user supplied values
@@ -285,14 +285,14 @@ imagePath = sys.argv[1]
 cascPath = "haarcascade_frontalface_default.xml"
 ```
 
-You first pass in the image and cascade names as command-line arguments. We’ll use the Abba image as well as the default cascade for detecting faces provided by OpenCV.
+You first pass in the image and cascade names as command-line arguments. WeÂ’ll use the Abba image as well as the default cascade for detecting faces provided by OpenCV.
 
 ```
 # Create the haar cascade
 faceCascade = cv2.CascadeClassifier(cascPath)
 ```
 
-Now we create the cascade and initialize it with our face cascade. This loads the face cascade into memory so it’s ready for use. Remember, the cascade is just an XML file that contains the data to detect faces.
+Now we create the cascade and initialize it with our face cascade. This loads the face cascade into memory so itÂ’s ready for use. Remember, the cascade is just an XML file that contains the data to detect faces.
 
 ```
 # Read the image
@@ -313,9 +313,9 @@ faces = faceCascade.detectMultiScale(
 )
 ```
 
-This function detects the actual face – and is the key part of our code, so let’s go over the options.
+This function detects the actual face Â– and is the key part of our code, so letÂ’s go over the options.
 
-The detectMultiScale function is a general function that detects objects. Since we are calling it on the face cascade, that’s what it detects. The first option is the grayscale image.
+The detectMultiScale function is a general function that detects objects. Since we are calling it on the face cascade, thatÂ’s what it detects. The first option is the grayscale image.
 
 The second is the scaleFactor. Since some faces may be closer to the camera, they would appear bigger than those faces in the back. The scale factor compensates for this.
 
@@ -333,7 +333,7 @@ for (x, y, w, h) in faces:
     cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 ```
 
-This function returns 4 values: the x and y location of the rectangle, and the rectangle’s width and height (w , h).
+This function returns 4 values: the x and y location of the rectangle, and the rectangleÂ’s width and height (w , h).
 
 We use these values to draw a rectangle using the built-in rectangle() function.
 
@@ -345,7 +345,7 @@ cv2.waitKey(0)
 In the end, we display the image, and wait for the user to press a key.
 Checking the results
 
-Let’s test against the Abba photo:
+LetÂ’s test against the Abba photo:
 
 ```
 $ python face_detect.py abba.png
@@ -361,11 +361,11 @@ That worked. How about another photo:
 
 ![](images/image9.jpg)
 
-That… is not a face. Let’s try again. I changed the parameters and found that setting the scaleFactor to 1.2 got rid of the wrong face.
+ThatÂ… is not a face. LetÂ’s try again. I changed the parameters and found that setting the scaleFactor to 1.2 got rid of the wrong face.
 
 ![](images/image10.jpg)
 
-What happened? Well, the first photo was taken fairly close up with a high quality camera. The second one seems to have been taken from afar and possibly from a mobile phone. This is why the scaleFactor had to be modified. As I said, you’ll have to tweak the algorithm on a case by case basis to avoid false positives.
+What happened? Well, the first photo was taken fairly close up with a high quality camera. The second one seems to have been taken from afar and possibly from a mobile phone. This is why the scaleFactor had to be modified. As I said, youÂ’ll have to tweak the algorithm on a case by case basis to avoid false positives.
 
 Be warned though that since this is based on machine learning, the results will never be 100% accurate. You will get good enough results in most cases, but occasionally the algorithm will identify incorrect objects as faces.
 
@@ -405,7 +405,7 @@ Here, we capture the video. The read() function reads one frame from the video s
 * The actual video frame read (one frame on each loop)
 *  A return code
 
-The return code tells us if we have run out of frames, which will happen if we are reading from a file. This doesn’t matter when reading from the webcam, since we can read forever.
+The return code tells us if we have run out of frames, which will happen if we are reading from a file. This doesnÂ’t matter when reading from the webcam, since we can read forever.
 
 ```
 # Capture frame-by-frame
@@ -436,7 +436,7 @@ if cv2.waitKey(1) & 0xFF == ord('q'):
     break
 ```
 
-We wait for the ‘q’ key to be pressed. If it is, we exit the script.
+We wait for the Â‘qÂ’ key to be pressed. If it is, we exit the script.
 
 ```
 # When everything is done, release the capture
@@ -463,9 +463,9 @@ This will play the file I provided. It may not work on Windows unless you have a
 
 ![](images/image11.jpg)
 
-So, that’s me with a passport sized photo in my hand. And you can see that the algorithm tracks both the real me and the photo me.
+So, thatÂ’s me with a passport sized photo in my hand. And you can see that the algorithm tracks both the real me and the photo me.
 
-Like I said in the last section, machine learning based algorithms are rarely 100% accurate. We aren’t at the stage where Robocop driving his motorcycle at 100 mph can track criminals using low quality CCTV cameras… yet.
+Like I said in the last section, machine learning based algorithms are rarely 100% accurate. We arenÂ’t at the stage where Robocop driving his motorcycle at 100 mph can track criminals using low quality CCTV camerasÂ… yet.
 
 The code searches for the face frame by frame, so it will take a fair amount of processing power. For example, on my five year old laptop, it took almost 90% of the CPU.
 
