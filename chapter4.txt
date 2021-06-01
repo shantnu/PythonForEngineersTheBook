@@ -521,7 +521,7 @@ title
 You can see we have a new table that shows the ratings by gender. But it has a lot of movies that may only have one or two ratings.
 
 ``` python
-ratings_by_gender = ratings_by_gender.ix[popular_movies]
+ratings_by_gender = ratings_by_gender.loc[popular_movies]
 ```
 
 The *.ix* is another way to select data. We are selecting the data that is in *popular_movies* only, which means it has at least 250 ratings. If I print *ratings_by_gender* now:
