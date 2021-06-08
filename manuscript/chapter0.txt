@@ -8,11 +8,7 @@ You might think installing Python is easy, but you'd be wrong. The problem is, f
 
 Most people you will find online, on places like Stack overflow, Reddit etc are web developers. They live in a highly sterilised environment, where every library they use is written in pure Python, and so easy to install. So if you get stuck installing Python and ask them questions, you will not get very helpful answers, and may even get insults.
 
-When writing this book, I looked for many solutions to this problem. The best one I found is the [Anaconda Python distribution](http://continuum.io/downloads). Especially if you are on Windows, I recommend using this distribution. It comes with most engineering libraries pre-installed (the notable exception is OpenCv). 
-
-The other option is to use Linux. You don't need to install Linux, a virtual machine is fine. The best one I've used is [Virtual box](https://www.virtualbox.org/). It is free and open source. I recommend installing [Linux Mint](http://www.linuxmint.com/). It is the easiest to use and most user friendly Linux. That's what I'm using for the virtual machine I built. Those of you who chose the VM option of the book will get this.
-
-The great thing about Linux Mint is that most libraries you need will come preinstalled. The only thing I had to install was, surprisingly, Pandas.
+When writing this book, I looked for many solutions to this problem. The best one I found is the [Anaconda Python distribution](http://continuum.io/downloads). Especially if you are on Windows, I recommend using this distribution. It comes with most engineering libraries pre-installed (the notable exception is OpenCv).
 
 If you get stuck with libraries, do ask for help.
 
@@ -28,7 +24,7 @@ An important library in Scipy we will use often is Matplotlib (or Pylab). This i
 
 **2 Pandas**
 
-Pandas is a fairly recent addition to the Python world. It was originally written to replace the functionality of R, and is used mainly in the financial world for statistical computing. 
+Pandas is a fairly recent addition to the Python world. It was originally written to replace the functionality of R, and is used mainly in the financial world for statistical computing.
 
 For a long time, I avoided using Pandas, as I figured (wrongly) that everything I could do in Pandas, I could do with Numpy. Which is technically correct, as Pandas is built on top of Scipy/Numpy.
 
@@ -38,11 +34,10 @@ But once I actually tried it, I loved it. Numpy is okay if you are working with 
 If you used the Anaconda distribution I recommend, Scipy and Pandas will be preinstalled. On Liunx Mint, Scipy was installed, but I had to install Pandas myself.
 
 
-**3 OpenCv and SimpleCv**
+**3 OpenCv**
 
 These are both libraries for image and video processing. OpenCv is the older one, and has been around forever, though the Python version is comparatively recent (you will find most examples for OpenCv in C/C++, though Python usage is increasing).
 
-The problem with OpenCv is that it is monstrous and hard to use. To get around this, SimpleCv was created. It is based on top of openCv, but aims to make its usage easier. I will talk about this later, but I found that while SimpleCv is easier to use, it's not very easy to install, and very flaky. 
 
 **4 Other libraries**
 
@@ -50,17 +45,6 @@ These are some other libraries you should know about.
 
 **Virtualenv** (Virtual environment) is a great library for installing different versions of libraries on the same machine. If you ever had code that only worked with v0.2 of some library, Virtualenv will create a special Python install that comes with that version only. You can have dozens of versions of the same library, with none of them clashing with each other.
 
-The only problem is Virtualenv only works with pure Python code, so it won't work with Scipy, OpenCv etc. Anaconda created a version of this, but it doesn't work so well on Windows (which is the one place it needs to work).
-
-**pip** is how you install Python libraries. Always. Never use *easy_install*, an old relic. So if you want to install something like flask, the correct way is:
-
-```
-pip install flask
-```
-
-*pip* is often combined with *virtualenv*, so that each environment has its own pip.
-
-Again, pip works great only for pure Python libraries.
 
 ## iPython
 
@@ -99,6 +83,6 @@ Seriously, give IPython a try. It's so great I could have written the whole book
 
 ## Source Code
 
-You should get all the source code for the book. That's because I don't want you to waste time typing code. 
+You should get all the source code for the book. That's because I don't want you to waste time typing code.
 
 I recommend you open the code with your favourite code editor along with the book, and run the code as you are reading it. If you really want to understand the code, play with it. Try changing it, try to break it, add more prints to see how each line works. Don't worry about corrupting the code, as you can download the latest version anytime. It's available on my [Github account](https://github.com/shantnu/PyEng). You don't even need to install Git- if you look at the right side, there is a *Download zip* option-- just download the latest code that way.

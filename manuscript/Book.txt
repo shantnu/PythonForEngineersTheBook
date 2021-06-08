@@ -1,10 +1,10 @@
-Intro.txt
+chapter0.txt
 chapter1.txt
 chapter2.txt
 chapter3.txt
-Pandas.txt
-image.txt
-multiprocessing.txt
-machine.txt
-rpi.txt
+chapter4.txt
+chapter5.txt
+chapter6.txt
+chapter7.txt
+chapter8.txt
 thank you.txt
