@@ -6,5 +6,4 @@ chapter4.txt
 chapter5.txt
 chapter6.txt
 chapter7.txt
-chapter8.txt
 thank you.txt
